@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Motos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <header th:replace="~{layouts/header :: header}"></header>
+
+    <main class="container">
+        <h1>Motos no Pátio</h1>
+
+        <div th:if="${message}" class="alert alert-success">
+            <p th:text="${message}"></p>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <p th:text="${error}"></p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Modelo</th>
+                    <th>Ano</th>
+                    <th>Placa</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="moto : ${motos}">
+                    <td th:text="${moto.id}"></td>
+                    <td th:text="${moto.modelo}"></td>
+                    <td th:text="${moto.ano}"></td>
+                    <td th:text="${moto.placa}"></td>
+                    <td>
+                        <a th:href="@{/motos/edit/{id}(id=${moto.id})}">Editar</a>
+                        <form th:action="@{/motos/delete/{id}(id=${moto.id})}" method="post" style="display:inline;">
+                            <button type="submit">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a th:href="@{/motos/new}">Adicionar Nova Moto</a>
+    </main>
+
+    <footer th:replace="~{layouts/footer :: footer}"></footer>
+</body>
+</html>

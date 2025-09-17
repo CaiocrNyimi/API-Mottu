@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Vaga</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <header th:replace="~{layouts/header :: header}"></header>
+
+    <main class="container">
+        <h1 th:text="${vaga.id == null} ? 'Cadastrar Nova Vaga' : 'Editar Vaga'"></h1>
+        
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <p th:text="${error}"></p>
+        </div>
+
+        <form th:action="@{/vagas/save}" th:object="${vaga}" method="post">
+            <input type="hidden" th:field="*{id}">
+
+            <label for="identificador">Identificador:</label>
+            <input type="text" id="identificador" th:field="*{identificador}">
+
+            <label for="codigo">Código:</label>
+            <input type="text" id="codigo" th:field="*{codigo}">
+
+            <label for="ocupada">Ocupada:</label>
+            <input type="checkbox" id="ocupada" th:field="*{ocupada}">
+
+            <label for="patio">Pátio:</label>
+            <select id="patio" name="patio">
+                <option th:each="p : ${patios}" th:value="${p.id}" th:text="${p.nome}"
+                        th:selected="${vaga.patio != null and vaga.patio.id == p.id}"></option>
+            </select>
+
+            <button type="submit">Salvar</button>
+        </form>
+        
+        <a th:href="@{/vagas}">Voltar para a Lista</a>
+    </main>
+
+    <footer th:replace="~{layouts/footer :: footer}"></footer>
+</body>
+</html>

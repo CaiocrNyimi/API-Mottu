@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Vagas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <header th:replace="~{layouts/header :: header}"></header>
+
+    <main class="container">
+        <h1>Vagas Cadastradas</h1>
+
+        <div th:if="${message}" class="alert alert-success">
+            <p th:text="${message}"></p>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <p th:text="${error}"></p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Identificador</th>
+                    <th>Código</th>
+                    <th>Pátio</th>
+                    <th>Ocupada?</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="vaga : ${vagas}">
+                    <td th:text="${vaga.id}"></td>
+                    <td th:text="${vaga.identificador}"></td>
+                    <td th:text="${vaga.codigo}"></td>
+                    <td th:text="${vaga.patio.nome}"></td>
+                    <td th:text="${vaga.ocupada} ? 'Sim' : 'Não'"></td>
+                    <td>
+                        <a th:href="@{/vagas/edit/{id}(id=${vaga.id})}">Editar</a>
+                        <form th:action="@{/vagas/delete/{id}(id=${vaga.id})}" method="post" style="display:inline;">
+                            <button type="submit">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <a th:href="@{/vagas/new}">Adicionar Nova Vaga</a>
+    </main>
+
+    <footer th:replace="~{layouts/footer :: footer}"></footer>
+</body>
+</html>

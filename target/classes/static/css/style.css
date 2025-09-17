@@ -1,0 +1,62 @@
+body {
+    background-color: var(--pico-background-color);
+    color: var(--pico-color);
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: var(--pico-spacing);
+}
+
+.main-nav {
+    display: flex;
+    justify-content: center;
+    padding: var(--pico-spacing);
+    border-bottom: 1px solid var(--pico-border-color);
+    margin-bottom: var(--pico-spacing);
+}
+
+.main-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: var(--pico-spacing);
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: var(--pico-color);
+    font-weight: bold;
+    padding: calc(var(--pico-spacing) * 0.5) var(--pico-spacing);
+    border-radius: var(--pico-border-radius);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.main-nav a:hover {
+    background-color: var(--pico-secondary);
+    color: var(--pico-inverse-background-color);
+}
+
+.main-content {
+    margin-top: var(--pico-spacing);
+    margin-bottom: var(--pico-spacing);
+}
+
+.main-footer {
+    text-align: center;
+    padding: var(--pico-spacing);
+    border-top: 1px solid var(--pico-border-color);
+    margin-top: var(--pico-spacing);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: var(--pico-spacing);
+    text-align: left;
+}

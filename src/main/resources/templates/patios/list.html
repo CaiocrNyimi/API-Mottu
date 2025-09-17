@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pátios</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <header th:replace="~{layouts/header :: header}"></header>
+
+    <main class="container">
+        <h1>Pátios Cadastrados</h1>
+
+        <div th:if="${message}" class="alert alert-success">
+            <p th:text="${message}"></p>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <p th:text="${error}"></p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Endereço</th>
+                    <th>Capacidade</th>
+                    <th>Vagas Disponíveis</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="patio : ${patios}">
+                    <td th:text="${patio.id}"></td>
+                    <td th:text="${patio.nome}"></td>
+                    <td th:text="${patio.endereco}"></td>
+                    <td th:text="${patio.capacidade}"></td>
+                    <td th:text="${patio.vagasDisponiveis}"></td>
+                    <td>
+                        <a th:href="@{/patios/edit/{id}(id=${patio.id})}">Editar</a>
+                        <form th:action="@{/patios/delete/{id}(id=${patio.id})}" method="post" style="display:inline;">
+                            <button type="submit">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <a th:href="@{/patios/new}">Adicionar Novo Pátio</a>
+    </main>
+
+    <footer th:replace="~{layouts/footer :: footer}"></footer>
+</body>
+</html>
