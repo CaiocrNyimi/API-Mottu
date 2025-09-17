@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface MotoRepository extends JpaRepository<Moto, Long>, JpaSpecificationExecutor<Moto> {
     int countByPatioId(Long patioId);
     Optional<Moto> findByPlaca(String placa);
+    boolean existsByPlaca(String placa);
 }

@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,8 +30,16 @@ public class MotoService {
 
     @Transactional
     public Moto save(Moto moto) {
+        if (motoRepository.existsByPlaca(moto.getPlaca())) {
+            throw new BusinessException("Já existe uma moto cadastrada com esta placa.");
+        }
+
+        int anoAtual = Year.now().getValue();
+        if (moto.getAno() < 2010 || moto.getAno() > anoAtual) {
+            throw new BusinessException("O ano da moto deve estar entre 2010 e " + anoAtual + ".");
+        }
+
         Long patioId = moto.getPatio().getId();
-        
         Optional<Vaga> vagaLivre = vagaService.findFirstAvailableVaga(patioId);
 
         if (vagaLivre.isPresent()) {
@@ -57,6 +66,11 @@ public class MotoService {
     public Moto update(Long id, Moto updatedMoto) {
         Moto existingMoto = findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Motorcycle not found with id: " + id));
+
+        if (!existingMoto.getPlaca().equals(updatedMoto.getPlaca()) && motoRepository.existsByPlaca(updatedMoto.getPlaca())) {
+            throw new BusinessException("Já existe uma moto com a placa " + updatedMoto.getPlaca() + ".");
+        }
+
         existingMoto.setPlaca(updatedMoto.getPlaca());
         existingMoto.setModelo(updatedMoto.getModelo());
         existingMoto.setCor(updatedMoto.getCor());
@@ -76,7 +90,6 @@ public class MotoService {
             vaga.setOcupada(false);
             vagaService.save(vaga);
         }
-
         motoRepository.deleteById(id);
     }
 
