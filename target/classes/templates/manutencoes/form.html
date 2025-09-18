@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nova Manutenção</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <header th:replace="~{layouts/header :: header}"></header>
+    <div class="container">
+        <h2>Nova Manutenção</h2>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <form th:action="@{/manutencoes/save}" th:object="${manutencao}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <div class="form-group">
+                <label for="motoId">Moto:</label>
+                <select id="motoId" name="motoId" class="form-control" required>
+                    <option th:each="moto : ${motos}" th:value="${moto.id}" th:text="${moto.modelo}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dataManutencao">Data da Manutenção:</label>
+                <input type="datetime-local" th:field="*{dataManutencao}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="tipoServico">Tipo de Serviço:</label>
+                <input type="text" th:field="*{tipoServico}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="quilometragem">Quilometragem:</label>
+                <input type="number" th:field="*{quilometragem}" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
+    <footer th:replace="~{layouts/footer :: footer}"></footer>
+</body>
+</html>

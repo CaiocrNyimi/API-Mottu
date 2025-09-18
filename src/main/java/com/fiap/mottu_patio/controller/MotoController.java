@@ -1,5 +1,6 @@
 package com.fiap.mottu_patio.controller;
 
+import com.fiap.mottu_patio.enums.Status;
 import com.fiap.mottu_patio.exception.BusinessException;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Moto;
@@ -68,6 +69,9 @@ public class MotoController {
             if (moto.getAno() == null) {
                 throw new IllegalArgumentException("O campo 'Ano' não pode ser vazio.");
             }
+            if (moto.getQuilometragem() == null) {
+                throw new IllegalArgumentException("O campo 'Quilometragem' não pode ser vazio.");
+            }
             if (patioId == null) {
                 throw new IllegalArgumentException("Por favor, selecione um pátio.");
             }
@@ -89,9 +93,16 @@ public class MotoController {
     @PostMapping("/delete/{id}")
     public String deleteMoto(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
+            Moto moto = motoService.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada."));
+
+            if (moto.getStatus() != Status.DISPONIVEL) {
+                throw new BusinessException("Não é possível excluir uma moto que não está disponível.");
+            }
+        
             motoService.deleteById(id);
             redirectAttributes.addFlashAttribute("message", "Moto excluída com sucesso!");
-        } catch (ResourceNotFoundException ex) {
+        } catch (ResourceNotFoundException | BusinessException ex) {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
         }
         return "redirect:/motos";

@@ -1,18 +1,16 @@
 package com.fiap.mottu_patio.service;
 
+import com.fiap.mottu_patio.enums.Status;
 import com.fiap.mottu_patio.exception.BusinessException;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Moto;
 import com.fiap.mottu_patio.model.Patio;
-import com.fiap.mottu_patio.model.Vaga;
 import com.fiap.mottu_patio.repository.MotoRepository;
-import com.fiap.mottu_patio.specification.MotoSpecification;
+import com.fiap.mottu_patio.repository.PatioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,39 +18,12 @@ import java.util.Optional;
 public class MotoService {
 
     private final MotoRepository motoRepository;
-    private final VagaService vagaService;
+    private final PatioRepository patioRepository;
 
     @Autowired
-    public MotoService(MotoRepository motoRepository, VagaService vagaService) {
+    public MotoService(MotoRepository motoRepository, PatioRepository patioRepository) {
         this.motoRepository = motoRepository;
-        this.vagaService = vagaService;
-    }
-
-    @Transactional
-    public Moto save(Moto moto) {
-        if (motoRepository.existsByPlaca(moto.getPlaca())) {
-            throw new BusinessException("Já existe uma moto cadastrada com esta placa.");
-        }
-
-        int anoAtual = Year.now().getValue();
-        if (moto.getAno() < 2010 || moto.getAno() > anoAtual) {
-            throw new BusinessException("O ano da moto deve estar entre 2010 e " + anoAtual + ".");
-        }
-
-        Long patioId = moto.getPatio().getId();
-        Optional<Vaga> vagaLivre = vagaService.findFirstAvailableVaga(patioId);
-
-        if (vagaLivre.isPresent()) {
-            Vaga vagaParaOcupar = vagaLivre.get();
-            vagaParaOcupar.setOcupada(true);
-
-            moto.setVaga(vagaParaOcupar);
-
-            vagaService.save(vagaParaOcupar);
-            return motoRepository.save(moto);
-        } else {
-            throw new BusinessException("O pátio está lotado, não há vagas disponíveis.");
-        }
+        this.patioRepository = patioRepository;
     }
 
     public List<Moto> findAll() {
@@ -62,41 +33,41 @@ public class MotoService {
     public Optional<Moto> findById(Long id) {
         return motoRepository.findById(id);
     }
+    
+    public List<Moto> findByStatus(Status status) {
+        return motoRepository.findByStatus(status);
+    }
 
-    public Moto update(Long id, Moto updatedMoto) {
-        Moto existingMoto = findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Motorcycle not found with id: " + id));
-
-        if (!existingMoto.getPlaca().equals(updatedMoto.getPlaca()) && motoRepository.existsByPlaca(updatedMoto.getPlaca())) {
-            throw new BusinessException("Já existe uma moto com a placa " + updatedMoto.getPlaca() + ".");
+    @Transactional
+    public Moto save(Moto moto) {
+        if (moto.getId() == null && motoRepository.existsByPlaca(moto.getPlaca())) {
+            throw new BusinessException("A placa já está cadastrada.");
+        }
+        
+        Patio patio = moto.getPatio();
+        if (patio != null) {
+            int vagasOcupadas = motoRepository.countByPatioId(patio.getId());
+            if (vagasOcupadas >= patio.getCapacidade()) {
+                throw new BusinessException("O pátio selecionado está lotado.");
+            }
+        }
+        
+        if (moto.getStatus() == null) {
+            moto.setStatus(Status.DISPONIVEL);
         }
 
-        existingMoto.setPlaca(updatedMoto.getPlaca());
-        existingMoto.setModelo(updatedMoto.getModelo());
-        existingMoto.setCor(updatedMoto.getCor());
-        existingMoto.setAno(updatedMoto.getAno());
-        existingMoto.setPatio(updatedMoto.getPatio());
-        
-        return motoRepository.save(existingMoto);
+        return motoRepository.save(moto);
     }
 
     @Transactional
     public void deleteById(Long id) {
         Moto moto = motoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada com o ID: " + id));
-
-        if (moto.getVaga() != null) {
-            Vaga vaga = moto.getVaga();
-            vaga.setOcupada(false);
-            vagaService.save(vaga);
+                .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada."));
+        
+        if (moto.getStatus() != Status.DISPONIVEL) {
+            throw new BusinessException("Não é possível excluir uma moto que não está disponível.");
         }
+        
         motoRepository.deleteById(id);
-    }
-
-    public List<Moto> findByFilter(String modelo, Integer ano, Patio patio) {
-        Specification<Moto> specification = Specification.where(MotoSpecification.hasModelo(modelo))
-                .and(MotoSpecification.hasAno(ano))
-                .and(MotoSpecification.hasPatio(patio));
-        return motoRepository.findAll(specification);
     }
 }

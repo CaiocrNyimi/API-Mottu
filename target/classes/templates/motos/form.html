@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Moto</title>
+    <title th:text="${moto.id == null} ? 'Cadastrar Nova Moto' : 'Editar Moto'"></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
@@ -30,6 +30,14 @@
 
             <label for="ano">Ano:</label>
             <input type="number" id="ano" th:field="*{ano}">
+            
+            <label for="quilometragem">Quilometragem:</label>
+            <input type="number" id="quilometragem" th:field="*{quilometragem}">
+
+            <label for="status">Status:</label>
+            <select id="status" th:field="*{status}">
+                <option th:each="s : ${T(com.fiap.mottu_patio.enums.Status).values()}" th:value="${s}" th:text="${s}"></option>
+            </select>
 
             <label for="patio">Pátio:</label>
             <select id="patio" name="patio">

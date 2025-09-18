@@ -28,4 +28,7 @@ public class Vaga {
     @JoinColumn(name = "patio_id", nullable = false)
     @NotNull(message = "O pátio associado é obrigatório")
     private Patio patio;
+
+    @OneToOne(mappedBy = "vaga", cascade = CascadeType.ALL)
+    private Moto moto;
 }

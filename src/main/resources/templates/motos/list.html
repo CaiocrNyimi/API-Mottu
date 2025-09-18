@@ -26,6 +26,7 @@
                     <th>Modelo</th>
                     <th>Ano</th>
                     <th>Placa</th>
+                    <th>Quilometragem</th> <th>Status</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -35,6 +36,8 @@
                     <td th:text="${moto.modelo}"></td>
                     <td th:text="${moto.ano}"></td>
                     <td th:text="${moto.placa}"></td>
+                    <td th:text="${moto.quilometragem}"></td>
+                    <td th:text="${moto.status}"></td>
                     <td>
                         <a th:href="@{/motos/edit/{id}(id=${moto.id})}">Editar</a>
                         <form th:action="@{/motos/delete/{id}(id=${moto.id})}" method="post" style="display:inline;">

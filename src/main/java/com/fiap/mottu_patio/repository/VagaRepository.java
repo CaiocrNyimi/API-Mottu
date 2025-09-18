@@ -17,4 +17,6 @@ public interface VagaRepository extends JpaRepository<Vaga, Long> {
     int countByPatioAndOcupadaTrue(Patio patio);
     void deleteAllByPatio(Patio patio);
     Optional<Vaga> findFirstByPatioIdAndOcupadaFalse(Long patioId);
+    Optional<Vaga> findTopByPatioOrderByIdDesc(Patio patio);
+    List<Vaga> findAllByPatioAndOcupadaFalse(Patio patio);
 }

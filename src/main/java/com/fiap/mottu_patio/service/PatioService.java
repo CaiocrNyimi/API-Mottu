@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,11 +33,17 @@ public class PatioService {
     
     public Patio save(Patio patio) {
         if (patio.getCapacidade() > 260) {
-            throw new IllegalArgumentException("The maximum number of slots allowed is 260.");
+            throw new IllegalArgumentException("O número máximo de vagas é 260.");
         }
+
         patio.setVagasDisponiveis(patio.getCapacidade());
+
         Patio savedPatio = patioRepository.save(patio);
-        generateVagas(savedPatio);
+
+        if (savedPatio.getCapacidade() > 0) {
+            generateVagas(savedPatio);
+        }
+
         return savedPatio;
     }
 
@@ -50,20 +57,23 @@ public class PatioService {
 
     public Patio update(Long id, Patio updatedPatio) {
         Patio existingPatio = findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Patio not found with id: " + id));
-
-        existingPatio.setNome(updatedPatio.getNome());
-        existingPatio.setEndereco(updatedPatio.getEndereco());
+                .orElseThrow(() -> new ResourceNotFoundException("Patio não encontrado com ID: " + id));
 
         int oldCapacity = existingPatio.getCapacidade();
         int newCapacity = updatedPatio.getCapacidade();
 
         if (newCapacity > 260) {
-            throw new IllegalArgumentException("The maximum number of slots allowed is 260.");
+            throw new IllegalArgumentException("O número máximo de vagas é 260.");
         }
 
-        existingPatio.setCapacidade(newCapacity);
         int occupiedVagas = vagaRepository.countByPatioAndOcupadaTrue(existingPatio);
+        if (newCapacity < occupiedVagas) {
+            throw new IllegalArgumentException("A nova capacidade não pode ser menor que o número de vagas ocupadas (" + occupiedVagas + ").");
+        }
+
+        existingPatio.setNome(updatedPatio.getNome());
+        existingPatio.setEndereco(updatedPatio.getEndereco());
+        existingPatio.setCapacidade(newCapacity);
         existingPatio.setVagasDisponiveis(newCapacity - occupiedVagas);
 
         Patio savedPatio = patioRepository.save(existingPatio);
@@ -80,7 +90,7 @@ public class PatioService {
     @Transactional
     public void deleteById(Long id) {
         Patio patio = patioRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Patio not found with id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("Patio não encontrado com ID: " + id));
 
         vagaRepository.deleteAllByPatio(patio);
 
@@ -108,34 +118,53 @@ public class PatioService {
     }
 
     private void generateAdditionalVagas(Patio patio, int oldCapacity, int newCapacity) {
-        List<Vaga> existingVagas = vagaRepository.findByPatio(patio);
-        int lastVagaIndex = existingVagas.size() - 1;
-        String[] parts = existingVagas.get(lastVagaIndex).getCodigo().split("(?<=\\D)(?=\\d)");
-        char row = parts[0].charAt(0);
-        int slotNumber = Integer.parseInt(parts[1]) + 1;
-        
-        for (int i = oldCapacity; i < newCapacity; i++) {
-            if (slotNumber > 10) {
-                slotNumber = 1;
-                row++;
+        Optional<Vaga> lastVagaOptional = vagaRepository.findTopByPatioOrderByIdDesc(patio);
+
+        int startingSlotNumber = lastVagaOptional.map(vaga -> {
+            try {
+                String code = vaga.getCodigo();
+                return Integer.parseInt(code.substring(1));
+            } catch (NumberFormatException e) {
+                return 0;
             }
-            String code = row + String.format("%02d", slotNumber);
-            Vaga newVaga = Vaga.builder()
-                    .identificador(row + ":" + slotNumber)
-                    .codigo(code)
-                    .ocupada(false)
-                    .patio(patio)
-                    .build();
+        }).orElse(0);
+
+        char currentRow = lastVagaOptional.map(vaga -> vaga.getCodigo().charAt(0)).orElse('A');
+
+        for (int i = oldCapacity; i < newCapacity; i++) {
+            startingSlotNumber++;
+
+            if (startingSlotNumber > 10) {
+                startingSlotNumber = 1;
+                currentRow++;
+            }
+
+            String formattedSlot = String.format("%02d", startingSlotNumber);
+            String code = String.valueOf(currentRow) + formattedSlot;
+            String identifier = "VAGA-" + code;
+
+            Vaga newVaga = new Vaga();
+            newVaga.setIdentificador(identifier);
+            newVaga.setCodigo(code);
+            newVaga.setOcupada(false);
+            newVaga.setPatio(patio);
+
             vagaRepository.save(newVaga);
-            slotNumber++;
         }
     }
 
     private void removeExcessVagas(Patio patio, int newCapacity) {
-        List<Vaga> vagasToRemove = vagaRepository.findByPatio(patio)
-                .stream()
-                .skip(newCapacity)
-                .collect(Collectors.toList());
-        vagaRepository.deleteAll(vagasToRemove);
+        List<Vaga> freeVagas = vagaRepository.findAllByPatioAndOcupadaFalse(patio);
+
+        int totalOccupied = vagaRepository.countByPatioAndOcupadaTrue(patio);
+        int vagasToRemoveCount = patio.getCapacidade() - newCapacity;
+
+        if (vagasToRemoveCount > 0 && freeVagas.size() >= vagasToRemoveCount) {
+            freeVagas.sort(Comparator.comparing(Vaga::getCodigo).reversed());
+
+            List<Vaga> vagasToRemove = freeVagas.subList(0, vagasToRemoveCount);
+            
+            vagaRepository.deleteAll(vagasToRemove);
+        }
     }
 }

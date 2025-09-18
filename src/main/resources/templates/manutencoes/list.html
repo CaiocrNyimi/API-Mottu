@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Manutenções</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <header th:replace="~{layouts/header :: header}"></header>
+    <div class="container">
+        <h2>Lista de Manutenções</h2>
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        <a th:href="@{/manutencoes/new}" class="btn btn-primary">Nova Manutenção</a>
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Moto</th>
+                    <th>Tipo de Serviço</th>
+                    <th>Quilometragem</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="manutencao : ${manutencoes}">
+                    <td th:text="${manutencao.id}"></td>
+                    <td th:text="${manutencao.moto.modelo}"></td>
+                    <td th:text="${manutencao.tipoServico}"></td>
+                    <td th:text="${manutencao.quilometragem}"></td>
+                    <td th:text="${manutencao.dataManutencao}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <footer th:replace="~{layouts/footer :: footer}"></footer>
+</body>
+</html>

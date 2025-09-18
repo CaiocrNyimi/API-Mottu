@@ -1,5 +1,7 @@
 package com.fiap.mottu_patio.model;
 
+import com.fiap.mottu_patio.enums.Status;
+import jakarta.validation.constraints.Min;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,9 +34,17 @@ public class Moto {
     @Column(nullable = false)
     private Integer ano;
 
+    @NotNull(message = "A quilometragem não pode ser nula")
+    @Min(value = 0, message = "A quilometragem não pode ser negativa")
+    private Integer quilometragem;
+
+    @NotNull(message = "O status não pode ser nulo")
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @NotNull(message = "O pátio associado é obrigatório")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patio_id", nullable = false)
-    @NotNull(message = "O pátio associado é obrigatório")
     private Patio patio;
 
     @ManyToOne(fetch = FetchType.LAZY)

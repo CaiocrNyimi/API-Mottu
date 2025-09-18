@@ -36,7 +36,7 @@ public class PatioController {
     }
 
     @PostMapping("/save")
-    public String savePatio(@ModelAttribute Patio patio, Model model) {
+    public String savePatio(@ModelAttribute Patio patio, Model model, RedirectAttributes redirectAttributes) {
         try {
             if (patio.getNome() == null || patio.getNome().isEmpty()) {
                 throw new IllegalArgumentException("O campo 'Nome' não pode ser vazio.");
@@ -44,13 +44,19 @@ public class PatioController {
             if (patio.getEndereco() == null || patio.getEndereco().isEmpty()) {
                 throw new IllegalArgumentException("O campo 'Endereço' não pode ser vazio.");
             }
-            if (patio.getCapacidade() == null || patio.getCapacidade() <= 0) {
+            if (patio.getCapacidade() <= 0) {
                 throw new IllegalArgumentException("A capacidade do pátio deve ser um número positivo.");
             }
-            
-            patioService.save(patio);
+
+            if (patio.getId() == null) {
+                patioService.save(patio);
+                redirectAttributes.addFlashAttribute("message", "Pátio criado com sucesso!");
+            } else {
+                patioService.update(patio.getId(), patio);
+                redirectAttributes.addFlashAttribute("message", "Pátio atualizado com sucesso!");
+            }
             return "redirect:/patios";
-        } catch (IllegalArgumentException | IllegalStateException ex) {
+        } catch (IllegalArgumentException | IllegalStateException | ResourceNotFoundException ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("patio", patio);
             return "patios/form";
