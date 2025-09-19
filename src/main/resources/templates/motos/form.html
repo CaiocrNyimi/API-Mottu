@@ -10,45 +10,70 @@
     <header th:replace="~{layouts/header :: header}"></header>
 
     <main class="container">
-        <h1 th:text="${moto.id == null} ? 'Cadastrar Nova Moto' : 'Editar Moto'"></h1>
+        <hgroup>
+            <h1 th:text="${moto.id == null} ? 'Cadastrar Nova Moto' : 'Editar Moto'"></h1>
+            <p th:text="${moto.id == null} ? 'Preencha os dados para adicionar uma nova moto.' : 'Altere os dados da moto e clique em salvar.'"></p>
+        </hgroup>
         
-        <div th:if="${error}" class="alert alert-danger" role="alert">
+        <article th:if="${error}" class="bg-danger-subtle">
             <p th:text="${error}"></p>
-        </div>
+        </article>
 
         <form th:action="@{/motos/save}" th:object="${moto}" method="post">
             <input type="hidden" th:field="*{id}">
 
-            <label for="placa">Placa:</label>
-            <input type="text" id="placa" th:field="*{placa}">
+            <div class="grid">
+                <label for="placa">
+                    Placa:
+                    <input type="text" id="placa" th:field="*{placa}" required>
+                </label>
 
-            <label for="modelo">Modelo:</label>
-            <input type="text" id="modelo" th:field="*{modelo}">
-
-            <label for="cor">Cor:</label>
-            <input type="text" id="cor" th:field="*{cor}">
-
-            <label for="ano">Ano:</label>
-            <input type="number" id="ano" th:field="*{ano}">
+                <label for="modelo">
+                    Modelo:
+                    <input type="text" id="modelo" th:field="*{modelo}" required>
+                </label>
+            </div>
             
-            <label for="quilometragem">Quilometragem:</label>
-            <input type="number" id="quilometragem" th:field="*{quilometragem}">
+            <div class="grid">
+                <label for="cor">
+                    Cor:
+                    <input type="text" id="cor" th:field="*{cor}" required>
+                </label>
 
-            <label for="status">Status:</label>
-            <select id="status" th:field="*{status}">
-                <option th:each="s : ${T(com.fiap.mottu_patio.enums.Status).values()}" th:value="${s}" th:text="${s}"></option>
-            </select>
+                <label for="ano">
+                    Ano:
+                    <input type="number" id="ano" th:field="*{ano}" required>
+                </label>
+            </div>
 
-            <label for="patio">Pátio:</label>
-            <select id="patio" name="patio">
-                <option th:each="p : ${patios}" th:value="${p.id}" th:text="${p.nome}"
-                        th:selected="${moto.patio != null and moto.patio.id == p.id}"></option>
-            </select>
-            
-            <button type="submit">Salvar</button>
+            <div class="grid">
+                <label for="quilometragem">
+                    Quilometragem:
+                    <input type="number" id="quilometragem" th:field="*{quilometragem}" required>
+                </label>
+                
+                <label for="status">
+                    Status:
+                    <select id="status" th:field="*{status}" required>
+                        <option th:each="s : ${T(com.fiap.mottu_patio.model.enums.Status).values()}" th:value="${s}" th:text="${s}"></option>
+                    </select>
+                </label>
+            </div>
+
+            <label for="patio">
+                Pátio:
+                <select id="patio" name="patio" required>
+                    <option value="">Selecione um pátio</option>
+                    <option th:each="p : ${patios}" th:value="${p.id}" th:text="${p.nome}"
+                            th:selected="${moto.patio != null and moto.patio.id == p.id}"></option>
+                </select>
+            </label>
+
+            <div class="grid">
+                <button type="submit">Salvar</button>
+                <a th:href="@{/motos}" role="button" class="secondary outline">Cancelar</a>
+            </div>
         </form>
-        
-        <a th:href="@{/motos}">Voltar para a Lista</a>
     </main>
 
     <footer th:replace="~{layouts/footer :: footer}"></footer>

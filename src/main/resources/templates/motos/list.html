@@ -10,45 +10,53 @@
     <header th:replace="~{layouts/header :: header}"></header>
 
     <main class="container">
-        <h1>Motos no Pátio</h1>
+        <hgroup>
+            <h1>Gerenciamento de Motos</h1>
+            <p>Lista completa de todas as motos cadastradas no pátio.</p>
+        </hgroup>
 
-        <div th:if="${message}" class="alert alert-success">
+        <article th:if="${message}" class="bg-success-subtle">
             <p th:text="${message}"></p>
-        </div>
-        <div th:if="${error}" class="alert alert-danger" role="alert">
+        </article>
+        <article th:if="${error}" class="bg-danger-subtle">
             <p th:text="${error}"></p>
+        </article>
+
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Modelo</th>
+                        <th>Ano</th>
+                        <th>Placa</th>
+                        <th>Quilometragem</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="moto : ${motos}">
+                        <td th:text="${moto.id}"></td>
+                        <td th:text="${moto.modelo}"></td>
+                        <td th:text="${moto.ano}"></td>
+                        <td th:text="${moto.placa}"></td>
+                        <td th:text="${moto.quilometragem}"></td>
+                        <td th:text="${moto.status}"></td>
+                        <td>
+                            <a th:href="@{/motos/edit/{id}(id=${moto.id})}" class="secondary">Editar</a>
+                            <form th:action="@{/motos/delete/{id}(id=${moto.id})}" method="post" style="display:inline;">
+                                <button type="submit" class="outline">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="grid">
+            <a th:href="@{/motos/new}" role="button">Adicionar Nova Moto</a>
         </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Modelo</th>
-                    <th>Ano</th>
-                    <th>Placa</th>
-                    <th>Quilometragem</th> <th>Status</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="moto : ${motos}">
-                    <td th:text="${moto.id}"></td>
-                    <td th:text="${moto.modelo}"></td>
-                    <td th:text="${moto.ano}"></td>
-                    <td th:text="${moto.placa}"></td>
-                    <td th:text="${moto.quilometragem}"></td>
-                    <td th:text="${moto.status}"></td>
-                    <td>
-                        <a th:href="@{/motos/edit/{id}(id=${moto.id})}">Editar</a>
-                        <form th:action="@{/motos/delete/{id}(id=${moto.id})}" method="post" style="display:inline;">
-                            <button type="submit">Excluir</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <a th:href="@{/motos/new}">Adicionar Nova Moto</a>
     </main>
 
     <footer th:replace="~{layouts/footer :: footer}"></footer>

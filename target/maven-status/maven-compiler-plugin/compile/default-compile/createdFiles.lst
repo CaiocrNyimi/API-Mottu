@@ -21,7 +21,6 @@ com\fiap\mottu_patio\model\User$UserBuilder.class
 com\fiap\mottu_patio\exception\ResourceNotFoundException.class
 com\fiap\mottu_patio\model\Vaga.class
 com\fiap\mottu_patio\model\Aluguel$AluguelBuilder.class
-com\fiap\mottu_patio\enums\Status.class
 com\fiap\mottu_patio\dto\VagasPorPatioFormatadoDTO.class
 com\fiap\mottu_patio\service\AluguelService.class
 com\fiap\mottu_patio\model\Manutencao$ManutencaoBuilder.class

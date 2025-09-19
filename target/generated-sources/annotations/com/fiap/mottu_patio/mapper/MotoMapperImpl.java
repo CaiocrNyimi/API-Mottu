@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-09-17T22:17:22-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.15 (Microsoft)"
+    date = "2025-09-19T20:37:02-0300",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.43.0.v20250819-1513, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class MotoMapperImpl extends MotoMapper {
@@ -26,10 +26,10 @@ public class MotoMapperImpl extends MotoMapper {
 
         Moto.MotoBuilder moto = Moto.builder();
 
-        moto.placa( request.getPlaca() );
-        moto.modelo( request.getModelo() );
-        moto.cor( request.getCor() );
         moto.ano( request.getAno() );
+        moto.cor( request.getCor() );
+        moto.modelo( request.getModelo() );
+        moto.placa( request.getPlaca() );
 
         moto.patio( mapPatio(request.getPatioId(), patioRepository) );
 
@@ -46,13 +46,13 @@ public class MotoMapperImpl extends MotoMapper {
 
         motoResponseDTO.setIdPatio( motoPatioId( moto ) );
         motoResponseDTO.setNomePatio( motoPatioNome( moto ) );
-        motoResponseDTO.setId( moto.getId() );
-        motoResponseDTO.setPlaca( moto.getPlaca() );
-        motoResponseDTO.setModelo( moto.getModelo() );
-        motoResponseDTO.setCor( moto.getCor() );
         if ( moto.getAno() != null ) {
             motoResponseDTO.setAno( moto.getAno() );
         }
+        motoResponseDTO.setCor( moto.getCor() );
+        motoResponseDTO.setId( moto.getId() );
+        motoResponseDTO.setModelo( moto.getModelo() );
+        motoResponseDTO.setPlaca( moto.getPlaca() );
 
         motoResponseDTO.setVagaAtual( moto.getVaga() != null ? moto.getVaga().getCodigo() : null );
 

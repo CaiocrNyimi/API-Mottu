@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Usuário</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <main class="container">
+        <article>
+            <header>
+                <hgroup>
+                    <h2>Criar Conta</h2>
+                    <p>Preencha os dados abaixo para se registrar.</p>
+                </hgroup>
+            </header>
+            
+            <form th:action="@{/register}" th:object="${user}" method="post">
+                <div class="grid">
+                    <label for="username">
+                        Usuário:
+                        <input type="text" id="username" name="username" th:field="*{username}" required>
+                    </label>
+                </div>
+                
+                <div class="grid">
+                    <label for="password">
+                        Senha:
+                        <input type="password" id="password" name="password" th:field="*{password}" required>
+                    </label>
+                </div>
+                
+                <div class="grid">
+                    <label for="role">
+                        Tipo de Usuário:
+                        <select id="role" name="role" th:field="*{role}">
+                            <option value="CLIENTE">Cliente</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                    </label>
+                </div>
+                
+                <button type="submit">Criar Conta</button>
+            </form>
+
+            <footer style="text-align: center; margin-top: 1rem;">
+                <p><a th:href="@{/login}">Já tem uma conta? Faça login aqui.</a></p>
+            </footer>
+        </article>
+    </main>
+</body>
+</html>

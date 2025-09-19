@@ -20,15 +20,12 @@ public class User {
 
     @NotBlank(message = "O nome é obrigatório")
     @Column(nullable = false)
-    private String name;
-
-    @NotBlank(message = "O e-mail é obrigatório")
-    @Email(message = "E-mail inválido")
-    @Column(nullable = false, unique = true)
-    private String email;
+    private String username;
 
     @NotBlank(message = "A senha é obrigatória")
     @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
     @Column(nullable = false)
     private String password;
+
+    private String role;
 }

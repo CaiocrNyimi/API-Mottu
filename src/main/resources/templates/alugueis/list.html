@@ -2,45 +2,59 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Aluguéis</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
-    <div th:insert="~{layouts/header :: header}"></div>
-    <div class="container">
-        <h2>Lista de Aluguéis</h2>
-        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-        <a th:href="@{/alugueis/new}" class="btn btn-primary">Novo Aluguel</a>
-        <table class="table mt-3">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Usuário</th>
-                    <th>Moto</th>
-                    <th>Início</th>
-                    <th>Fim</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="aluguel : ${alugueis}">
-                    <td th:text="${aluguel.id}"></td>
-                    <td th:text="${aluguel.user.name}"></td>
-                    <td th:text="${aluguel.moto.modelo}"></td>
-                    <td th:text="${aluguel.startDate}"></td>
-                    <td th:text="${aluguel.endDate}"></td>
-                    <td th:text="${aluguel.status}"></td>
-                    <td>
-                        <form th:if="${aluguel.status == 'Reservado' or aluguel.status == 'Alugado'}"
-                              th:action="@{/alugueis/return/{id}(id=${aluguel.id})}" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm">Devolver</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <header th:replace="~{layouts/header :: header}"></header>
+
+    <main class="container">
+        <hgroup>
+            <h1>Gerenciamento de Aluguéis</h1>
+            <p>Lista de todos os aluguéis registrados.</p>
+        </hgroup>
+        
+        <article th:if="${message}" class="bg-success-subtle">
+            <p th:text="${message}"></p>
+        </article>
+
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuário</th>
+                        <th>Moto</th>
+                        <th>Início</th>
+                        <th>Fim</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="aluguel : ${aluguels}">
+                        <td th:text="${aluguel.id}"></td>
+                        <td th:text="${aluguel.user.username}"></td>
+                        <td th:text="${aluguel.moto.modelo}"></td>
+                        <td th:text="${aluguel.startDate}"></td>
+                        <td th:text="${aluguel.endDate}"></td>
+                        <td th:text="${aluguel.status}"></td>
+                        <td>
+                            <form th:if="${aluguel.status == 'Reservado' or aluguel.status == 'Alugado'}"
+                                th:action="@{/alugueis/return/{id}(id=${aluguel.id})}" method="post" style="display:inline;">
+                                <button type="submit" class="outline">Devolver</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <div class="grid">
+            <a th:href="@{/alugueis/new}" role="button">Novo Aluguel</a>
+        </div>
+    </main>
     <footer th:replace="~{layouts/footer :: footer}"></footer>
 </body>
 </html>

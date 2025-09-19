@@ -3,15 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciamento de Pátio</title>
+    <title>Gerenciamento de Pátio | Mottu</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
     <header th:replace="~{layouts/header :: header}"></header>
 
     <main class="container">
-        <h1>Bem-vindo ao Gerenciamento de Pátio da Mottu</h1>
-        <p>Use os links acima para navegar pelas funcionalidades do sistema.</p>
+        <hgroup>
+            <h1>Gerenciamento de Pátio da Mottu</h1>
+            <p>Seu centro de controle para motos e pátios.</p>
+        </hgroup>
+        
+        <div class="grid">
+            <a th:href="@{/motos}">
+                <article>
+                    <header><h3>Motos</h3></header>
+                    <p>Gerencie todas as motos disponíveis.</p>
+                </article>
+            </a>
+            
+            <a th:href="@{/manutencoes}">
+                <article>
+                    <header><h3>Manutenções</h3></header>
+                    <p>Controle as manutenções futuras e em andamento.</p>
+                </article>
+            </a>
+            
+            <a th:href="@{/patios}">
+                <article>
+                    <header><h3>Pátios</h3></header>
+                    <p>Monitore os pátios e suas vagas.</p>
+                </article>
+            </a>
+        </div>
+        
+        <section>
+            <p>Use o menu de navegação do cabeçalho para acessar todas as funcionalidades do sistema.</p>
+        </section>
     </main>
 
     <footer th:replace="~{layouts/footer :: footer}"></footer>

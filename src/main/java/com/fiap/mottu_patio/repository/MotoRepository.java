@@ -1,6 +1,6 @@
 package com.fiap.mottu_patio.repository;
 
-import com.fiap.mottu_patio.enums.Status;
+import com.fiap.mottu_patio.model.enums.Status;
 import com.fiap.mottu_patio.model.Moto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

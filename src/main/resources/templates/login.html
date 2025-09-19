@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <main class="container">
+        <article>
+            <header>
+                <hgroup>
+                    <h2>Login</h2>
+                    <p>Entre com seu usuário e senha para continuar.</p>
+                </hgroup>
+            </header>
+            
+            <form th:action="@{/login}" method="post">
+                <div class="grid">
+                    <label for="username">
+                        Usuário:
+                        <input type="text" id="username" name="username" required>
+                    </label>
+                </div>
+                
+                <div class="grid">
+                    <label for="password">
+                        Senha:
+                        <input type="password" id="password" name="password" required>
+                    </label>
+                </div>
+                
+                <button type="submit">Entrar</button>
+            </form>
+
+            <footer style="text-align: center; margin-top: 1rem;">
+                <div th:if="${param.error}" style="color: red;">
+                    <p>Usuário ou senha inválidos. Tente novamente.</p>
+                </div>
+                <div th:if="${param.logout}" style="color: green;">
+                    <p>Você foi desconectado com sucesso.</p>
+                </div>
+                <div th:if="${param.registered}" style="color: blue;">
+                    <p>Conta criada com sucesso! Faça seu login.</p>
+                </div>
+                
+                <p>Não tem uma conta? <a th:href="@{/register}">Crie uma aqui.</a></p>
+            </footer>
+        </article>
+    </main>
+</body>
+</html>

@@ -13,7 +13,7 @@ public class AluguelMapper {
         return AluguelDTO.builder()
                 .id(aluguel.getId())
                 .userId(aluguel.getUser().getId())
-                .userName(aluguel.getUser().getName())
+                .userName(aluguel.getUser().getUsername())
                 .motoId(aluguel.getMoto().getId())
                 .motoModel(aluguel.getMoto().getModelo())
                 .startDate(aluguel.getStartDate())

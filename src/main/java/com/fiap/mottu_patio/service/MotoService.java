@@ -1,6 +1,6 @@
 package com.fiap.mottu_patio.service;
 
-import com.fiap.mottu_patio.enums.Status;
+import com.fiap.mottu_patio.model.enums.Status;
 import com.fiap.mottu_patio.exception.BusinessException;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Moto;

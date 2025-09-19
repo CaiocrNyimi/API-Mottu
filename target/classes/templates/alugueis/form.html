@@ -2,38 +2,63 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Novo Aluguel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${aluguel?.id == null} ? 'Novo Aluguel' : 'Editar Aluguel'"></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
-    <div th:insert="~{layouts/header :: header}"></div>
-    <div class="container">
-        <h2>Novo Aluguel</h2>
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-        <form th:action="@{/alugueis/save}" method="post">
-            <div class="form-group">
-                <label for="userId">Usuário:</label>
-                <select id="userId" name="userId" class="form-control" required>
-                    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+    <header th:replace="~{layouts/header :: header}"></header>
+
+    <main class="container">
+        <hgroup>
+            <h1 th:text="${aluguel?.id == null} ? 'Novo Aluguel' : 'Editar Aluguel'"></h1>
+            <p th:text="${aluguel?.id == null} ? 'Preencha os dados para reservar uma moto.' : 'Altere os dados do aluguel e clique em salvar.'"></p>
+        </hgroup>
+        
+        <article th:if="${error}" class="bg-danger-subtle">
+            <p th:text="${error}"></p>
+        </article>
+
+        <form th:action="@{/alugueis/save}" th:object="${aluguel}" method="post">
+            <input type="hidden" th:field="*{id}">
+
+            <label for="userId">
+                Usuário:
+                <select id="userId" name="user.id" required>
+                    <option value="">Selecione um usuário</option>
+                    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"
+                            th:selected="${aluguel?.user != null and aluguel.user.id == user.id}"></option>
                 </select>
-            </div>
-            <div class="form-group">
-                <label for="motoId">Moto:</label>
-                <select id="motoId" name="motoId" class="form-control" required>
-                    <option th:each="moto : ${motos}" th:value="${moto.id}" th:text="${moto.modelo}"></option>
+            </label>
+            
+            <label for="motoId">
+                Moto:
+                <select id="motoId" name="moto.id" required>
+                    <option value="">Selecione uma moto</option>
+                    <option th:each="moto : ${motos}" th:value="${moto.id}" th:text="${moto.modelo}"
+                            th:selected="${aluguel?.moto != null and aluguel.moto.id == moto.id}"></option>
                 </select>
+            </label>
+
+            <div class="grid">
+                <label for="startDate">
+                    Data de Início:
+                    <input type="datetime-local" id="startDate" name="startDate" th:field="*{startDate}" required>
+                </label>
+                
+                <label for="endDate">
+                    Data de Fim:
+                    <input type="datetime-local" id="endDate" name="endDate" th:field="*{endDate}" required>
+                </label>
             </div>
-            <div class="form-group">
-                <label for="startDate">Data de Início:</label>
-                <input type="datetime-local" id="startDate" name="startDate" class="form-control" required>
+            
+            <div class="grid">
+                <button type="submit">Reservar</button>
+                <a th:href="@{/alugueis}" role="button" class="secondary outline">Cancelar</a>
             </div>
-            <div class="form-group">
-                <label for="endDate">Data de Fim:</label>
-                <input type="datetime-local" id="endDate" name="endDate" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Reservar</button>
         </form>
-    </div>
+    </main>
+
     <footer th:replace="~{layouts/footer :: footer}"></footer>
 </body>
 </html>

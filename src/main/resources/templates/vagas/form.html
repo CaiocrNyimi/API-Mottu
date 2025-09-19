@@ -3,41 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Vaga</title>
+    <title th:text="${vaga.id == null} ? 'Cadastrar Nova Vaga' : 'Editar Vaga'"></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
     <header th:replace="~{layouts/header :: header}"></header>
 
     <main class="container">
-        <h1 th:text="${vaga.id == null} ? 'Cadastrar Nova Vaga' : 'Editar Vaga'"></h1>
+        <hgroup>
+            <h1 th:text="${vaga.id == null} ? 'Cadastrar Nova Vaga' : 'Editar Vaga'"></h1>
+            <p th:text="${vaga.id == null} ? 'Preencha os dados para adicionar uma nova vaga.' : 'Altere os dados da vaga e clique em salvar.'"></p>
+        </hgroup>
         
-        <div th:if="${error}" class="alert alert-danger" role="alert">
+        <article th:if="${error}" class="bg-danger-subtle">
             <p th:text="${error}"></p>
-        </div>
+        </article>
 
         <form th:action="@{/vagas/save}" th:object="${vaga}" method="post">
             <input type="hidden" th:field="*{id}">
 
-            <label for="identificador">Identificador:</label>
-            <input type="text" id="identificador" th:field="*{identificador}">
+            <div class="grid">
+                <label for="identificador">
+                    Identificador:
+                    <input type="text" id="identificador" th:field="*{identificador}" required>
+                </label>
 
-            <label for="codigo">Código:</label>
-            <input type="text" id="codigo" th:field="*{codigo}">
+                <label for="codigo">
+                    Código:
+                    <input type="text" id="codigo" th:field="*{codigo}" required>
+                </label>
+            </div>
 
-            <label for="ocupada">Ocupada:</label>
-            <input type="checkbox" id="ocupada" th:field="*{ocupada}">
+            <label for="patio">
+                Pátio:
+                <select id="patio" name="patio" required>
+                    <option value="">Selecione um pátio</option>
+                    <option th:each="p : ${patios}" th:value="${p.id}" th:text="${p.nome}"
+                            th:selected="${vaga.patio != null and vaga.patio.id == p.id}"></option>
+                </select>
+            </label>
+            
+            <label for="ocupada">
+                Ocupada:
+                <input type="checkbox" id="ocupada" th:field="*{ocupada}">
+            </label>
 
-            <label for="patio">Pátio:</label>
-            <select id="patio" name="patio">
-                <option th:each="p : ${patios}" th:value="${p.id}" th:text="${p.nome}"
-                        th:selected="${vaga.patio != null and vaga.patio.id == p.id}"></option>
-            </select>
-
-            <button type="submit">Salvar</button>
+            <div class="grid">
+                <button type="submit">Salvar</button>
+                <a th:href="@{/vagas}" role="button" class="secondary outline">Cancelar</a>
+            </div>
         </form>
-        
-        <a th:href="@{/vagas}">Voltar para a Lista</a>
     </main>
 
     <footer th:replace="~{layouts/footer :: footer}"></footer>

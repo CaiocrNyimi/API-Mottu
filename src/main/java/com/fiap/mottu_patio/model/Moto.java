@@ -1,6 +1,6 @@
 package com.fiap.mottu_patio.model;
 
-import com.fiap.mottu_patio.enums.Status;
+import com.fiap.mottu_patio.model.enums.Status;
 import jakarta.validation.constraints.Min;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

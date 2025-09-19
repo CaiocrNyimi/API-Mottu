@@ -3,35 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Pátio</title>
+    <title th:text="${patio.id == null} ? 'Cadastrar Novo Pátio' : 'Editar Pátio'"></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
     <header th:replace="~{layouts/header :: header}"></header>
 
     <main class="container">
-        <h1 th:text="${patio.id == null} ? 'Cadastrar Novo Pátio' : 'Editar Pátio'"></h1>
+        <hgroup>
+            <h1 th:text="${patio.id == null} ? 'Cadastrar Novo Pátio' : 'Editar Pátio'"></h1>
+            <p th:text="${patio.id == null} ? 'Preencha os dados para adicionar um novo pátio.' : 'Altere os dados do pátio e clique em salvar.'"></p>
+        </hgroup>
         
-        <div th:if="${error}" class="alert alert-danger" role="alert">
+        <article th:if="${error}" class="bg-danger-subtle">
             <p th:text="${error}"></p>
-        </div>
+        </article>
 
         <form th:action="@{/patios/save}" th:object="${patio}" method="post">
             <input type="hidden" th:field="*{id}">
 
-            <label for="nome">Nome:</label>
-            <input type="text" id="nome" th:field="*{nome}">
+            <div class="grid">
+                <label for="nome">
+                    Nome:
+                    <input type="text" id="nome" th:field="*{nome}" required>
+                </label>
 
-            <label for="endereco">Endereço:</label>
-            <input type="text" id="endereco" th:field="*{endereco}">
+                <label for="endereco">
+                    Endereço:
+                    <input type="text" id="endereco" th:field="*{endereco}" required>
+                </label>
+            </div>
+            
+            <label for="capacidade">
+                Capacidade:
+                <input type="number" id="capacidade" th:field="*{capacidade}" required>
+            </label>
 
-            <label for="capacidade">Capacidade:</label>
-            <input type="number" id="capacidade" th:field="*{capacidade}">
-
-            <button type="submit">Salvar</button>
+            <div class="grid">
+                <button type="submit">Salvar</button>
+                <a th:href="@{/patios}" role="button" class="secondary outline">Cancelar</a>
+            </div>
         </form>
-        
-        <a th:href="@{/patios}">Voltar para a Lista</a>
     </main>
 
     <footer th:replace="~{layouts/footer :: footer}"></footer>

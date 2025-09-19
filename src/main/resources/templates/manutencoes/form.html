@@ -2,37 +2,58 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Nova Manutenção</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${manutencao.id == null} ? 'Nova Manutenção' : 'Editar Manutenção'"></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
     <header th:replace="~{layouts/header :: header}"></header>
-    <div class="container">
-        <h2>Nova Manutenção</h2>
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <main class="container">
+        <hgroup>
+            <h1 th:text="${manutencao.id == null} ? 'Nova Manutenção' : 'Editar Manutenção'"></h1>
+            <p th:text="${manutencao.id == null} ? 'Registre uma nova manutenção para a moto.' : 'Altere os dados da manutenção e clique em salvar.'"></p>
+        </hgroup>
+        
+        <article th:if="${error}" class="bg-danger-subtle">
+            <p th:text="${error}"></p>
+        </article>
+
         <form th:action="@{/manutencoes/save}" th:object="${manutencao}" method="post">
             <input type="hidden" th:field="*{id}">
-            <div class="form-group">
-                <label for="motoId">Moto:</label>
-                <select id="motoId" name="motoId" class="form-control" required>
-                    <option th:each="moto : ${motos}" th:value="${moto.id}" th:text="${moto.modelo}"></option>
+
+            <label for="moto">
+                Moto:
+                <select id="motoId" name="moto.id" required>
+                    <option th:each="moto : ${motos}" th:value="${moto.id}" th:text="${moto.modelo}"
+                            th:selected="${manutencao.moto != null and manutencao.moto.id == moto.id}"></option>
                 </select>
+            </label>
+            
+            <div class="grid">
+                <label for="dataManutencao">
+                    Data da Manutenção:
+                    <input type="datetime-local" th:field="*{dataManutencao}" required>
+                </label>
+                
+                <label for="quilometragem">
+                    Quilometragem:
+                    <input type="number" id="quilometragem" th:field="*{quilometragem}" required>
+                </label>
             </div>
-            <div class="form-group">
-                <label for="dataManutencao">Data da Manutenção:</label>
-                <input type="datetime-local" th:field="*{dataManutencao}" class="form-control" required>
+            
+            <label for="tipoServico">
+                Tipo de Serviço:
+                <input type="text" id="tipoServico" th:field="*{tipoServico}" required>
+            </label>
+
+            <div class="grid">
+                <button type="submit">Salvar</button>
+                <a th:href="@{/manutencoes}" role="button" class="secondary outline">Cancelar</a>
             </div>
-            <div class="form-group">
-                <label for="tipoServico">Tipo de Serviço:</label>
-                <input type="text" th:field="*{tipoServico}" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="quilometragem">Quilometragem:</label>
-                <input type="number" th:field="*{quilometragem}" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Salvar</button>
         </form>
-    </div>
+    </main>
+
     <footer th:replace="~{layouts/footer :: footer}"></footer>
 </body>
 </html>

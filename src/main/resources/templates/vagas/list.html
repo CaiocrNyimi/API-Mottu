@@ -10,44 +10,51 @@
     <header th:replace="~{layouts/header :: header}"></header>
 
     <main class="container">
-        <h1>Vagas Cadastradas</h1>
+        <hgroup>
+            <h1>Gerenciamento de Vagas</h1>
+            <p>Lista de todas as vagas cadastradas no pátio.</p>
+        </hgroup>
 
-        <div th:if="${message}" class="alert alert-success">
+        <article th:if="${message}" class="bg-success-subtle">
             <p th:text="${message}"></p>
-        </div>
-        <div th:if="${error}" class="alert alert-danger" role="alert">
+        </article>
+        <article th:if="${error}" class="bg-danger-subtle">
             <p th:text="${error}"></p>
-        </div>
+        </article>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Identificador</th>
-                    <th>Código</th>
-                    <th>Pátio</th>
-                    <th>Ocupada?</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="vaga : ${vagas}">
-                    <td th:text="${vaga.id}"></td>
-                    <td th:text="${vaga.identificador}"></td>
-                    <td th:text="${vaga.codigo}"></td>
-                    <td th:text="${vaga.patio.nome}"></td>
-                    <td th:text="${vaga.ocupada} ? 'Sim' : 'Não'"></td>
-                    <td>
-                        <a th:href="@{/vagas/edit/{id}(id=${vaga.id})}">Editar</a>
-                        <form th:action="@{/vagas/delete/{id}(id=${vaga.id})}" method="post" style="display:inline;">
-                            <button type="submit">Excluir</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        
-        <a th:href="@{/vagas/new}">Adicionar Nova Vaga</a>
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Identificador</th>
+                        <th>Código</th>
+                        <th>Pátio</th>
+                        <th>Ocupada?</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="vaga : ${vagas}">
+                        <td th:text="${vaga.id}"></td>
+                        <td th:text="${vaga.identificador}"></td>
+                        <td th:text="${vaga.codigo}"></td>
+                        <td th:text="${vaga.patio.nome}"></td>
+                        <td th:text="${vaga.ocupada} ? 'Sim' : 'Não'"></td>
+                        <td>
+                            <a th:href="@{/vagas/edit/{id}(id=${vaga.id})}" class="secondary">Editar</a>
+                            <form th:action="@{/vagas/delete/{id}(id=${vaga.id})}" method="post" style="display:inline;">
+                                <button type="submit" class="outline">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="grid">
+            <a th:href="@{/vagas/new}" role="button">Adicionar Nova Vaga</a>
+        </div>
     </main>
 
     <footer th:replace="~{layouts/footer :: footer}"></footer>

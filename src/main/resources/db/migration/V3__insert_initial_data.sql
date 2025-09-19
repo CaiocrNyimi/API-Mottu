@@ -16,9 +16,6 @@ VALUES ('VAGA-A04', FALSE, 'A04', 1);
 INSERT INTO vaga (identificador, ocupada, codigo, patio_id)
 VALUES ('VAGA-A05', FALSE, 'A05', 1);
 
-INSERT INTO app_user (name, email, password)
-VALUES ('João da Silva', 'joao@email.com', 'senha123');
-
 INSERT INTO moto (placa, modelo, cor, ano, quilometragem, status, patio_id, vaga_id)
 VALUES ('ABC-1234', 'Honda CG 160', 'Preta', 2022, 10000, 'DISPONIVEL', 1, 1);
 
