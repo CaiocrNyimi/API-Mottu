@@ -35,8 +35,38 @@ public class PatioController {
         return "patios/form";
     }
 
-    @PostMapping("/save")
-    public String savePatio(@ModelAttribute Patio patio, Model model, RedirectAttributes redirectAttributes) {
+    @GetMapping("/{id}")
+    public String showPatioDetails(@PathVariable Long id, Model model) {
+        Optional<Patio> patio = patioService.findById(id);
+        if (patio.isPresent()) {
+            model.addAttribute("patio", patio.get());
+            return "patios/details";
+        }
+        return "redirect:/patios";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Optional<Patio> patio = patioService.findById(id);
+        if (patio.isPresent()) {
+            model.addAttribute("patio", patio.get());
+            return "patios/form";
+        }
+        return "redirect:/patios";
+    }
+
+    @PostMapping
+    public String createPatio(@ModelAttribute Patio patio, Model model, RedirectAttributes redirectAttributes) {
+        return saveOrUpdatePatio(patio, model, redirectAttributes, true);
+    }
+
+    @PutMapping("/{id}")
+    public String updatePatio(@PathVariable Long id, @ModelAttribute Patio patio, Model model, RedirectAttributes redirectAttributes) {
+        patio.setId(id);
+        return saveOrUpdatePatio(patio, model, redirectAttributes, false);
+    }
+
+    private String saveOrUpdatePatio(Patio patio, Model model, RedirectAttributes redirectAttributes, boolean isNew) {
         try {
             if (patio.getNome() == null || patio.getNome().isEmpty()) {
                 throw new IllegalArgumentException("O campo 'Nome' não pode ser vazio.");
@@ -48,7 +78,7 @@ public class PatioController {
                 throw new IllegalArgumentException("A capacidade do pátio deve ser um número positivo.");
             }
 
-            if (patio.getId() == null) {
+            if (isNew) {
                 patioService.save(patio);
                 redirectAttributes.addFlashAttribute("message", "Pátio criado com sucesso!");
             } else {
@@ -63,17 +93,7 @@ public class PatioController {
         }
     }
 
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        Optional<Patio> patio = patioService.findById(id);
-        if (patio.isPresent()) {
-            model.addAttribute("patio", patio.get());
-            return "patios/form";
-        }
-        return "redirect:/patios";
-    }
-
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public String deletePatio(@PathVariable("id") Long id, RedirectAttributes attributes) {
         try {
             patioService.deleteById(id);

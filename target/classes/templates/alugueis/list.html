@@ -7,54 +7,62 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
-    <header th:replace="~{layouts/header :: header}"></header>
+<header th:replace="~{layouts/header :: header}"></header>
 
-    <main class="container">
-        <hgroup>
-            <h1>Gerenciamento de Aluguéis</h1>
-            <p>Lista de todos os aluguéis registrados.</p>
-        </hgroup>
-        
-        <article th:if="${message}" class="bg-success-subtle">
-            <p th:text="${message}"></p>
-        </article>
+<main class="container">
+    <hgroup>
+        <h1>Gerenciamento de Aluguéis</h1>
+        <p>Lista de todos os aluguéis registrados.</p>
+    </hgroup>
 
-        <section>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Usuário</th>
-                        <th>Moto</th>
-                        <th>Início</th>
-                        <th>Fim</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="aluguel : ${aluguels}">
-                        <td th:text="${aluguel.id}"></td>
-                        <td th:text="${aluguel.user.username}"></td>
-                        <td th:text="${aluguel.moto.modelo}"></td>
-                        <td th:text="${aluguel.startDate}"></td>
-                        <td th:text="${aluguel.endDate}"></td>
-                        <td th:text="${aluguel.status}"></td>
-                        <td>
-                            <form th:if="${aluguel.status == 'Reservado' or aluguel.status == 'Alugado'}"
-                                th:action="@{/alugueis/return/{id}(id=${aluguel.id})}" method="post" style="display:inline;">
-                                <button type="submit" class="outline">Devolver</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-        
-        <div class="grid">
-            <a th:href="@{/alugueis/new}" role="button">Novo Aluguel</a>
-        </div>
-    </main>
-    <footer th:replace="~{layouts/footer :: footer}"></footer>
+    <article th:if="${message}" class="bg-success-subtle">
+        <p th:text="${message}"></p>
+    </article>
+    <article th:if="${error}" class="bg-danger-subtle">
+        <p th:text="${error}"></p>
+    </article>
+
+    <section th:if="${#lists.isEmpty(aluguels)}">
+        <p>Nenhum aluguel registrado no momento.</p>
+    </section>
+
+    <section th:if="${not #lists.isEmpty(aluguels)}">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuário</th>
+                    <th>Moto</th>
+                    <th>Início</th>
+                    <th>Fim</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="aluguel : ${aluguels}">
+                    <td th:text="${aluguel.id}"></td>
+                    <td th:text="${aluguel.user.username}"></td>
+                    <td th:text="${aluguel.moto.modelo}"></td>
+                    <td th:text="${#temporals.format(aluguel.startDate, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${#temporals.format(aluguel.endDate, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${aluguel.status}"></td>
+                    <td>
+                        <form th:if="${aluguel.status == 'Reservado' or aluguel.status == 'Alugado'}"
+                              th:action="@{/alugueis/return/{id}(id=${aluguel.id})}" method="post" style="display:inline;">
+                            <button type="submit" class="outline">Devolver</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <div class="grid">
+        <a th:href="@{/alugueis/new}" role="button">Novo Aluguel</a>
+    </div>
+</main>
+
+<footer th:replace="~{layouts/footer :: footer}"></footer>
 </body>
 </html>

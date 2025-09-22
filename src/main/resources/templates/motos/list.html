@@ -22,7 +22,11 @@
             <p th:text="${error}"></p>
         </article>
 
-        <section>
+        <section th:if="${#lists.isEmpty(motos)}">
+            <p>Nenhuma moto cadastrada no momento.</p>
+        </section>
+
+        <section th:if="${not #lists.isEmpty(motos)}">
             <table>
                 <thead>
                     <tr>
@@ -32,6 +36,7 @@
                         <th>Placa</th>
                         <th>Quilometragem</th>
                         <th>Status</th>
+                        <th>Pátio</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -41,11 +46,13 @@
                         <td th:text="${moto.modelo}"></td>
                         <td th:text="${moto.ano}"></td>
                         <td th:text="${moto.placa}"></td>
-                        <td th:text="${moto.quilometragem}"></td>
+                        <td th:text="${moto.quilometragem} + ' km'"></td>
                         <td th:text="${moto.status}"></td>
+                        <td th:text="${moto.patio != null ? moto.patio.nome : 'Não vinculado'}"></td>
                         <td>
                             <a th:href="@{/motos/edit/{id}(id=${moto.id})}" class="secondary">Editar</a>
-                            <form th:action="@{/motos/delete/{id}(id=${moto.id})}" method="post" style="display:inline;">
+                            <form th:action="@{/motos/{id}(id=${moto.id})}" method="post" style="display:inline;">
+                                <input type="hidden" name="_method" value="delete">
                                 <button type="submit" class="outline">Excluir</button>
                             </form>
                         </td>

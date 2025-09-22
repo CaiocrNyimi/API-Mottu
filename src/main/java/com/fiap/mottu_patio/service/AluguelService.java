@@ -1,19 +1,21 @@
 package com.fiap.mottu_patio.service;
 
-import com.fiap.mottu_patio.model.enums.Status;
 import com.fiap.mottu_patio.exception.BusinessException;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
-import com.fiap.mottu_patio.model.Moto;
 import com.fiap.mottu_patio.model.Aluguel;
+import com.fiap.mottu_patio.model.Moto;
 import com.fiap.mottu_patio.model.User;
-import com.fiap.mottu_patio.repository.MotoRepository;
+import com.fiap.mottu_patio.model.enums.Status;
 import com.fiap.mottu_patio.repository.AluguelRepository;
+import com.fiap.mottu_patio.repository.MotoRepository;
 import com.fiap.mottu_patio.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AluguelService {
@@ -32,7 +34,11 @@ public class AluguelService {
     public List<Aluguel> findAll() {
         return aluguelRepository.findAll();
     }
-    
+
+    public Optional<Aluguel> findById(Long id) {
+        return aluguelRepository.findById(id);
+    }
+
     @Transactional
     public Aluguel reserveBike(Long userId, Long motoId, LocalDateTime startDate, LocalDateTime endDate) {
         User user = userRepository.findById(userId)
@@ -65,6 +71,26 @@ public class AluguelService {
         motoRepository.save(moto);
 
         return newAluguel;
+    }
+
+    @Transactional
+    public Aluguel updateAluguel(Long id, Long userId, Long motoId, LocalDateTime startDate, LocalDateTime endDate) {
+        Aluguel aluguel = aluguelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Aluguel não encontrado."));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
+        Moto moto = motoRepository.findById(motoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada."));
+
+        aluguel.setUser(user);
+        aluguel.setMoto(moto);
+        aluguel.setStartDate(startDate);
+        aluguel.setEndDate(endDate);
+        aluguel.setStatus("Reservado");
+
+        aluguelRepository.save(aluguel);
+        return aluguel;
     }
 
     @Transactional

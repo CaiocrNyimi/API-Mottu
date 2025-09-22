@@ -41,6 +41,16 @@ public class MotoController {
         return "motos/form";
     }
 
+    @GetMapping("/{id}")
+    public String showMotoDetails(@PathVariable("id") Long id, Model model) {
+        Optional<Moto> moto = motoService.findById(id);
+        if (moto.isPresent()) {
+            model.addAttribute("moto", moto.get());
+            return "motos/details";
+        }
+        return "redirect:/motos";
+    }
+
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Optional<Moto> moto = motoService.findById(id);
@@ -52,10 +62,23 @@ public class MotoController {
         return "redirect:/motos";
     }
 
-    @PostMapping("/save")
-    public String saveMoto(@ModelAttribute Moto moto,
-                           @RequestParam(value = "patio", required = false) Long patioId,
-                           Model model) {
+    @PostMapping
+    public String createMoto(@ModelAttribute Moto moto,
+                             @RequestParam(value = "patio", required = false) Long patioId,
+                             Model model) {
+        return saveOrUpdateMoto(moto, patioId, model, true);
+    }
+
+    @PutMapping("/{id}")
+    public String updateMoto(@PathVariable("id") Long id,
+                             @ModelAttribute Moto moto,
+                             @RequestParam(value = "patio", required = false) Long patioId,
+                             Model model) {
+        moto.setId(id);
+        return saveOrUpdateMoto(moto, patioId, model, false);
+    }
+
+    private String saveOrUpdateMoto(Moto moto, Long patioId, Model model, boolean isNew) {
         try {
             if (moto.getPlaca() == null || moto.getPlaca().isEmpty()) {
                 throw new IllegalArgumentException("O campo 'Placa' não pode ser vazio.");
@@ -77,9 +100,8 @@ public class MotoController {
             }
 
             Patio patio = patioService.findById(patioId)
-                                      .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
+                    .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
             moto.setPatio(patio);
-
             motoService.save(moto);
             return "redirect:/motos";
         } catch (IllegalArgumentException | ResourceNotFoundException | BusinessException ex) {
@@ -90,16 +112,14 @@ public class MotoController {
         }
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public String deleteMoto(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
             Moto moto = motoService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada."));
-
+                    .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada."));
             if (moto.getStatus() != Status.DISPONIVEL) {
                 throw new BusinessException("Não é possível excluir uma moto que não está disponível.");
             }
-        
             motoService.deleteById(id);
             redirectAttributes.addFlashAttribute("message", "Moto excluída com sucesso!");
         } catch (ResourceNotFoundException | BusinessException ex) {

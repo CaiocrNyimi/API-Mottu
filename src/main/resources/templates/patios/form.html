@@ -14,13 +14,14 @@
             <h1 th:text="${patio.id == null} ? 'Cadastrar Novo Pátio' : 'Editar Pátio'"></h1>
             <p th:text="${patio.id == null} ? 'Preencha os dados para adicionar um novo pátio.' : 'Altere os dados do pátio e clique em salvar.'"></p>
         </hgroup>
-        
+
         <article th:if="${error}" class="bg-danger-subtle">
             <p th:text="${error}"></p>
         </article>
 
-        <form th:action="@{/patios/save}" th:object="${patio}" method="post">
+        <form th:action="${patio.id == null} ? @{/patios} : @{/patios/{id}(id=${patio.id})}" th:object="${patio}" method="post">
             <input type="hidden" th:field="*{id}">
+            <input type="hidden" name="_method" th:value="${patio.id != null} ? 'put' : 'post'">
 
             <div class="grid">
                 <label for="nome">
@@ -33,7 +34,7 @@
                     <input type="text" id="endereco" th:field="*{endereco}" required>
                 </label>
             </div>
-            
+
             <label for="capacidade">
                 Capacidade:
                 <input type="number" id="capacidade" th:field="*{capacidade}" required>

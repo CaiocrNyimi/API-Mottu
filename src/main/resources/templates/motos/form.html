@@ -14,13 +14,14 @@
             <h1 th:text="${moto.id == null} ? 'Cadastrar Nova Moto' : 'Editar Moto'"></h1>
             <p th:text="${moto.id == null} ? 'Preencha os dados para adicionar uma nova moto.' : 'Altere os dados da moto e clique em salvar.'"></p>
         </hgroup>
-        
+
         <article th:if="${error}" class="bg-danger-subtle">
             <p th:text="${error}"></p>
         </article>
 
-        <form th:action="@{/motos/save}" th:object="${moto}" method="post">
+        <form th:action="${moto.id == null} ? @{/motos} : @{/motos/{id}(id=${moto.id})}" th:object="${moto}" method="post">
             <input type="hidden" th:field="*{id}">
+            <input type="hidden" name="_method" th:value="${moto.id != null} ? 'put' : 'post'">
 
             <div class="grid">
                 <label for="placa">
@@ -33,7 +34,7 @@
                     <input type="text" id="modelo" th:field="*{modelo}" required>
                 </label>
             </div>
-            
+
             <div class="grid">
                 <label for="cor">
                     Cor:
@@ -51,11 +52,13 @@
                     Quilometragem:
                     <input type="number" id="quilometragem" th:field="*{quilometragem}" required>
                 </label>
-                
+
                 <label for="status">
                     Status:
                     <select id="status" th:field="*{status}" required>
-                        <option th:each="s : ${T(com.fiap.mottu_patio.model.enums.Status).values()}" th:value="${s}" th:text="${s}"></option>
+                        <option value="">Selecione</option>
+                        <option th:each="s : ${T(com.fiap.mottu_patio.model.enums.Status).values()}"
+                                th:value="${s}" th:text="${s}"></option>
                     </select>
                 </label>
             </div>

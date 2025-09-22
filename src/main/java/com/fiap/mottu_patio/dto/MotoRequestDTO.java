@@ -20,6 +20,5 @@ public class MotoRequestDTO {
     private Integer ano;
 
     @NotNull
-    private Long patioId;  // ID do pátio onde a moto está
-
+    private Long patioId;
 }

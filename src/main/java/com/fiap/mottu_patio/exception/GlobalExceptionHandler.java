@@ -1,6 +1,5 @@
 package com.fiap.mottu_patio.exception;
 
-import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

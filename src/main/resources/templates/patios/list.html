@@ -22,7 +22,11 @@
             <p th:text="${error}"></p>
         </article>
 
-        <section>
+        <section th:if="${#lists.isEmpty(patios)}">
+            <p>Nenhum pátio cadastrado no momento.</p>
+        </section>
+
+        <section th:if="${not #lists.isEmpty(patios)}">
             <table>
                 <thead>
                     <tr>
@@ -43,7 +47,8 @@
                         <td th:text="${patio.vagasDisponiveis}"></td>
                         <td>
                             <a th:href="@{/patios/edit/{id}(id=${patio.id})}" class="secondary">Editar</a>
-                            <form th:action="@{/patios/delete/{id}(id=${patio.id})}" method="post" style="display:inline;">
+                            <form th:action="@{/patios/{id}(id=${patio.id})}" method="post" style="display:inline;">
+                                <input type="hidden" name="_method" value="delete">
                                 <button type="submit" class="outline">Excluir</button>
                             </form>
                         </td>

@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
 <head th:fragment="header-links">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Pátio</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
-
 <body>
     <header th:fragment="header" class="container">
         <nav>
@@ -16,16 +14,14 @@
             </ul>
             <ul>
                 <li sec:authorize="isAuthenticated()"><a th:href="@{/}">Início</a></li>
-
                 <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/motos}">Motos</a></li>
                 <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/patios}">Pátios</a></li>
                 <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/vagas}">Vagas</a></li>
                 <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/manutencoes}">Manutenções</a></li>
-                
-                <li sec:authorize="hasAnyRole('CLIENTE', 'ADMIN')"><a th:href="@{/alugueis}">Alugueis</a></li>
-                
+                <li sec:authorize="hasAnyRole('CLIENTE','ADMIN')"><a th:href="@{/alugueis}">Aluguéis</a></li>
+                <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/users}">Usuários</a></li>
                 <li sec:authorize="isAuthenticated()">
-                    <form th:action="@{/logout}" method="post">
+                    <form th:action="@{/logout}" method="post" style="display:inline;">
                         <button type="submit">Sair</button>
                     </form>
                 </li>

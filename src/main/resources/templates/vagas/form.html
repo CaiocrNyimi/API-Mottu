@@ -14,13 +14,14 @@
             <h1 th:text="${vaga.id == null} ? 'Cadastrar Nova Vaga' : 'Editar Vaga'"></h1>
             <p th:text="${vaga.id == null} ? 'Preencha os dados para adicionar uma nova vaga.' : 'Altere os dados da vaga e clique em salvar.'"></p>
         </hgroup>
-        
+
         <article th:if="${error}" class="bg-danger-subtle">
             <p th:text="${error}"></p>
         </article>
 
-        <form th:action="@{/vagas/save}" th:object="${vaga}" method="post">
+        <form th:action="${vaga.id == null} ? @{/vagas} : @{/vagas/{id}(id=${vaga.id})}" th:object="${vaga}" method="post">
             <input type="hidden" th:field="*{id}">
+            <input type="hidden" name="_method" th:value="${vaga.id != null} ? 'put' : 'post'">
 
             <div class="grid">
                 <label for="identificador">
@@ -42,7 +43,7 @@
                             th:selected="${vaga.patio != null and vaga.patio.id == p.id}"></option>
                 </select>
             </label>
-            
+
             <label for="ocupada">
                 Ocupada:
                 <input type="checkbox" id="ocupada" th:field="*{ocupada}">

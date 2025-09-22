@@ -7,58 +7,59 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
-    <header th:replace="~{layouts/header :: header}"></header>
+<header th:replace="~{layouts/header :: header}"></header>
 
-    <main class="container">
-        <hgroup>
-            <h1 th:text="${aluguel?.id == null} ? 'Novo Aluguel' : 'Editar Aluguel'"></h1>
-            <p th:text="${aluguel?.id == null} ? 'Preencha os dados para reservar uma moto.' : 'Altere os dados do aluguel e clique em salvar.'"></p>
-        </hgroup>
-        
-        <article th:if="${error}" class="bg-danger-subtle">
-            <p th:text="${error}"></p>
-        </article>
+<main class="container">
+    <hgroup>
+        <h1 th:text="${aluguel?.id == null} ? 'Novo Aluguel' : 'Editar Aluguel'"></h1>
+        <p th:text="${aluguel?.id == null} ? 'Preencha os dados para reservar uma moto.' : 'Altere os dados do aluguel e clique em salvar.'"></p>
+    </hgroup>
 
-        <form th:action="@{/alugueis/save}" th:object="${aluguel}" method="post">
-            <input type="hidden" th:field="*{id}">
+    <article th:if="${error}" class="bg-danger-subtle">
+        <p th:text="${error}"></p>
+    </article>
 
-            <label for="userId">
-                Usuário:
-                <select id="userId" name="user.id" required>
-                    <option value="">Selecione um usuário</option>
-                    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"
-                            th:selected="${aluguel?.user != null and aluguel.user.id == user.id}"></option>
-                </select>
+    <form th:action="${aluguel?.id == null} ? @{/alugueis} : @{/alugueis/{id}(id=${aluguel.id})}" th:object="${aluguel}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" name="_method" th:value="${aluguel?.id != null} ? 'put' : 'post'">
+
+        <label for="userId">
+            Usuário:
+            <select id="userId" name="user" required>
+                <option value="">Selecione um usuário</option>
+                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"
+                        th:selected="${aluguel?.user != null and aluguel.user.id == user.id}"></option>
+            </select>
+        </label>
+
+        <label for="motoId">
+            Moto:
+            <select id="motoId" name="moto" required>
+                <option value="">Selecione uma moto</option>
+                <option th:each="moto : ${motos}" th:value="${moto.id}" th:text="${moto.modelo}"
+                        th:selected="${aluguel?.moto != null and aluguel.moto.id == moto.id}"></option>
+            </select>
+        </label>
+
+        <div class="grid">
+            <label for="startDate">
+                Data de Início:
+                <input type="datetime-local" id="startDate" th:field="*{startDate}" required>
             </label>
-            
-            <label for="motoId">
-                Moto:
-                <select id="motoId" name="moto.id" required>
-                    <option value="">Selecione uma moto</option>
-                    <option th:each="moto : ${motos}" th:value="${moto.id}" th:text="${moto.modelo}"
-                            th:selected="${aluguel?.moto != null and aluguel.moto.id == moto.id}"></option>
-                </select>
+
+            <label for="endDate">
+                Data de Fim:
+                <input type="datetime-local" id="endDate" th:field="*{endDate}" required>
             </label>
+        </div>
 
-            <div class="grid">
-                <label for="startDate">
-                    Data de Início:
-                    <input type="datetime-local" id="startDate" name="startDate" th:field="*{startDate}" required>
-                </label>
-                
-                <label for="endDate">
-                    Data de Fim:
-                    <input type="datetime-local" id="endDate" name="endDate" th:field="*{endDate}" required>
-                </label>
-            </div>
-            
-            <div class="grid">
-                <button type="submit">Reservar</button>
-                <a th:href="@{/alugueis}" role="button" class="secondary outline">Cancelar</a>
-            </div>
-        </form>
-    </main>
+        <div class="grid">
+            <button type="submit">Reservar</button>
+            <a th:href="@{/alugueis}" role="button" class="secondary outline">Cancelar</a>
+        </div>
+    </form>
+</main>
 
-    <footer th:replace="~{layouts/footer :: footer}"></footer>
+<footer th:replace="~{layouts/footer :: footer}"></footer>
 </body>
 </html>

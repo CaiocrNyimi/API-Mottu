@@ -1,23 +1,17 @@
 package com.fiap.mottu_patio.service;
 
-import com.fiap.mottu_patio.dto.PatioResponseDTO;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Patio;
 import com.fiap.mottu_patio.model.Vaga;
 import com.fiap.mottu_patio.repository.PatioRepository;
 import com.fiap.mottu_patio.repository.VagaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class PatioService {

@@ -14,12 +14,19 @@
             <h1>Gerenciamento de Manutenções</h1>
             <p>Lista de todas as manutenções realizadas nas motos.</p>
         </hgroup>
-        
+
         <article th:if="${message}" class="bg-success-subtle">
             <p th:text="${message}"></p>
         </article>
+        <article th:if="${error}" class="bg-danger-subtle">
+            <p th:text="${error}"></p>
+        </article>
 
-        <section>
+        <section th:if="${#lists.isEmpty(manutencoes)}">
+            <p>Nenhuma manutenção registrada no momento.</p>
+        </section>
+
+        <section th:if="${not #lists.isEmpty(manutencoes)}">
             <table>
                 <thead>
                     <tr>
@@ -36,11 +43,12 @@
                         <td th:text="${manutencao.id}"></td>
                         <td th:text="${manutencao.moto.modelo}"></td>
                         <td th:text="${manutencao.tipoServico}"></td>
-                        <td th:text="${manutencao.quilometragem}"></td>
-                        <td th:text="${manutencao.dataManutencao}"></td>
+                        <td th:text="${manutencao.quilometragem} + ' km'"></td>
+                        <td th:text="${#temporals.format(manutencao.dataManutencao, 'dd/MM/yyyy HH:mm')}"></td>
                         <td>
                             <a th:href="@{/manutencoes/edit/{id}(id=${manutencao.id})}" class="secondary">Editar</a>
-                            <form th:action="@{/manutencoes/delete/{id}(id=${manutencao.id})}" method="post" style="display:inline;">
+                            <form th:action="@{/manutencoes/{id}(id=${manutencao.id})}" method="post" style="display:inline;">
+                                <input type="hidden" name="_method" value="delete">
                                 <button type="submit" class="outline">Excluir</button>
                             </form>
                         </td>
@@ -53,6 +61,7 @@
             <a th:href="@{/manutencoes/new}" role="button">Nova Manutenção</a>
         </div>
     </main>
+
     <footer th:replace="~{layouts/footer :: footer}"></footer>
 </body>
 </html>

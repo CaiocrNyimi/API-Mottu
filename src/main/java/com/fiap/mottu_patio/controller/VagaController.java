@@ -39,6 +39,16 @@ public class VagaController {
         return "vagas/form";
     }
 
+    @GetMapping("/{id}")
+    public String showVagaDetails(@PathVariable("id") Long id, Model model) {
+        Optional<Vaga> vaga = vagaService.findById(id);
+        if (vaga.isPresent()) {
+            model.addAttribute("vaga", vaga.get());
+            return "vagas/details";
+        }
+        return "redirect:/vagas";
+    }
+
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Optional<Vaga> vaga = vagaService.findById(id);
@@ -50,10 +60,23 @@ public class VagaController {
         return "redirect:/vagas";
     }
 
-    @PostMapping("/save")
-    public String saveVaga(@ModelAttribute Vaga vaga,
-                           @RequestParam(value = "patio", required = false) Long patioId,
-                           Model model) {
+    @PostMapping
+    public String createVaga(@ModelAttribute Vaga vaga,
+                             @RequestParam(value = "patio", required = false) Long patioId,
+                             Model model) {
+        return saveOrUpdateVaga(vaga, patioId, model, true);
+    }
+
+    @PutMapping("/{id}")
+    public String updateVaga(@PathVariable("id") Long id,
+                             @ModelAttribute Vaga vaga,
+                             @RequestParam(value = "patio", required = false) Long patioId,
+                             Model model) {
+        vaga.setId(id);
+        return saveOrUpdateVaga(vaga, patioId, model, false);
+    }
+
+    private String saveOrUpdateVaga(Vaga vaga, Long patioId, Model model, boolean isNew) {
         try {
             if (vaga.getIdentificador() == null || vaga.getIdentificador().isEmpty()) {
                 throw new IllegalArgumentException("O campo 'Identificador' não pode ser vazio.");
@@ -64,9 +87,9 @@ public class VagaController {
             if (patioId == null) {
                 throw new IllegalArgumentException("Por favor, selecione um pátio.");
             }
-            
+
             Patio patio = patioService.findById(patioId)
-                                      .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
+                    .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
             vaga.setPatio(patio);
 
             vagaService.save(vaga);
@@ -79,7 +102,7 @@ public class VagaController {
         }
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public String deleteVaga(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
             vagaService.deleteById(id);
