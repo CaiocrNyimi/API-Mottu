@@ -3,14 +3,17 @@ package com.fiap.mottu_patio.dto;
 import lombok.Data;
 
 @Data
-public class MotoResponseDTO {
-
+public class MotoResponse {
     private Long id;
     private String placa;
     private String modelo;
     private String cor;
-    private int ano;
+    private Integer ano;
+    private Integer quilometragem;
+    private String status;
+
     private Long idPatio;
     private String nomePatio;
+
     private String vagaAtual;
 }

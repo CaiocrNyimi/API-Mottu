@@ -1,7 +1,7 @@
 package com.fiap.mottu_patio.mapper;
 
-import com.fiap.mottu_patio.dto.MotoRequestDTO;
-import com.fiap.mottu_patio.dto.MotoResponseDTO;
+import com.fiap.mottu_patio.dto.MotoRequest;
+import com.fiap.mottu_patio.dto.MotoResponse;
 import com.fiap.mottu_patio.model.Moto;
 import com.fiap.mottu_patio.model.Patio;
 import com.fiap.mottu_patio.repository.PatioRepository;
@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-09-21T21:45:01-0300",
+    date = "2025-09-23T20:11:08-0300",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.43.0.v20250819-1513, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class MotoMapperImpl extends MotoMapper {
 
     @Override
-    public Moto toEntity(MotoRequestDTO request, PatioRepository patioRepository) {
+    public Moto toEntity(MotoRequest request, PatioRepository patioRepository) {
         if ( request == null ) {
             return null;
         }
@@ -30,6 +30,7 @@ public class MotoMapperImpl extends MotoMapper {
         moto.cor( request.getCor() );
         moto.modelo( request.getModelo() );
         moto.placa( request.getPlaca() );
+        moto.quilometragem( request.getQuilometragem() );
 
         moto.patio( mapPatio(request.getPatioId(), patioRepository) );
 
@@ -37,35 +38,37 @@ public class MotoMapperImpl extends MotoMapper {
     }
 
     @Override
-    public MotoResponseDTO toResponse(Moto moto) {
+    public MotoResponse toResponse(Moto moto) {
         if ( moto == null ) {
             return null;
         }
 
-        MotoResponseDTO motoResponseDTO = new MotoResponseDTO();
+        MotoResponse motoResponse = new MotoResponse();
 
-        motoResponseDTO.setIdPatio( motoPatioId( moto ) );
-        motoResponseDTO.setNomePatio( motoPatioNome( moto ) );
-        if ( moto.getAno() != null ) {
-            motoResponseDTO.setAno( moto.getAno() );
+        motoResponse.setIdPatio( motoPatioId( moto ) );
+        motoResponse.setNomePatio( motoPatioNome( moto ) );
+        motoResponse.setAno( moto.getAno() );
+        motoResponse.setCor( moto.getCor() );
+        motoResponse.setId( moto.getId() );
+        motoResponse.setModelo( moto.getModelo() );
+        motoResponse.setPlaca( moto.getPlaca() );
+        motoResponse.setQuilometragem( moto.getQuilometragem() );
+        if ( moto.getStatus() != null ) {
+            motoResponse.setStatus( moto.getStatus().name() );
         }
-        motoResponseDTO.setCor( moto.getCor() );
-        motoResponseDTO.setId( moto.getId() );
-        motoResponseDTO.setModelo( moto.getModelo() );
-        motoResponseDTO.setPlaca( moto.getPlaca() );
 
-        motoResponseDTO.setVagaAtual( moto.getVaga() != null ? moto.getVaga().getCodigo() : null );
+        motoResponse.setVagaAtual( moto.getVaga() != null ? moto.getVaga().getCodigo() : null );
 
-        return motoResponseDTO;
+        return motoResponse;
     }
 
     @Override
-    public List<MotoResponseDTO> toResponseList(List<Moto> motos) {
+    public List<MotoResponse> toResponseList(List<Moto> motos) {
         if ( motos == null ) {
             return null;
         }
 
-        List<MotoResponseDTO> list = new ArrayList<MotoResponseDTO>( motos.size() );
+        List<MotoResponse> list = new ArrayList<MotoResponse>( motos.size() );
         for ( Moto moto : motos ) {
             list.add( toResponse( moto ) );
         }

@@ -1,16 +1,16 @@
 package com.fiap.mottu_patio.mapper;
 
-import com.fiap.mottu_patio.dto.AluguelDTO;
+import com.fiap.mottu_patio.dto.AluguelResponse;
 import com.fiap.mottu_patio.model.Aluguel;
 
 public class AluguelMapper {
 
-    public static AluguelDTO toDTO(Aluguel aluguel) {
+    public static AluguelResponse toDTO(Aluguel aluguel) {
         if (aluguel == null) {
             return null;
         }
 
-        return AluguelDTO.builder()
+        return AluguelResponse.builder()
                 .id(aluguel.getId())
                 .userId(aluguel.getUser().getId())
                 .userName(aluguel.getUser().getUsername())

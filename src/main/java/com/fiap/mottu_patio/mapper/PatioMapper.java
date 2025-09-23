@@ -1,7 +1,7 @@
 package com.fiap.mottu_patio.mapper;
 
-import com.fiap.mottu_patio.dto.PatioRequestDTO;
-import com.fiap.mottu_patio.dto.PatioResponseDTO;
+import com.fiap.mottu_patio.dto.PatioRequest;
+import com.fiap.mottu_patio.dto.PatioResponse;
 import com.fiap.mottu_patio.model.Patio;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -13,9 +13,9 @@ public interface PatioMapper {
 
     PatioMapper INSTANCE = Mappers.getMapper(PatioMapper.class);
 
-    Patio toEntity(PatioRequestDTO dto);
+    Patio toEntity(PatioRequest dto);
 
-    PatioResponseDTO toResponse(Patio patio);
+    PatioResponse toResponse(Patio patio);
 
-    List<PatioResponseDTO> toResponseList(List<Patio> patios);
+    List<PatioResponse> toResponseList(List<Patio> patios);
 }

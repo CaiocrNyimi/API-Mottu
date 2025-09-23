@@ -1,7 +1,7 @@
 package com.fiap.mottu_patio.mapper;
 
-import com.fiap.mottu_patio.dto.PatioRequestDTO;
-import com.fiap.mottu_patio.dto.PatioResponseDTO;
+import com.fiap.mottu_patio.dto.PatioRequest;
+import com.fiap.mottu_patio.dto.PatioResponse;
 import com.fiap.mottu_patio.model.Patio;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-09-21T21:45:01-0300",
+    date = "2025-09-23T20:11:08-0300",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.43.0.v20250819-1513, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class PatioMapperImpl implements PatioMapper {
 
     @Override
-    public Patio toEntity(PatioRequestDTO dto) {
+    public Patio toEntity(PatioRequest dto) {
         if ( dto == null ) {
             return null;
         }
@@ -32,29 +32,28 @@ public class PatioMapperImpl implements PatioMapper {
     }
 
     @Override
-    public PatioResponseDTO toResponse(Patio patio) {
+    public PatioResponse toResponse(Patio patio) {
         if ( patio == null ) {
             return null;
         }
 
-        PatioResponseDTO patioResponseDTO = new PatioResponseDTO();
+        PatioResponse patioResponse = new PatioResponse();
 
-        patioResponseDTO.setCapacidade( patio.getCapacidade() );
-        patioResponseDTO.setEndereco( patio.getEndereco() );
-        patioResponseDTO.setId( patio.getId() );
-        patioResponseDTO.setNome( patio.getNome() );
-        patioResponseDTO.setVagasDisponiveis( patio.getVagasDisponiveis() );
+        patioResponse.setCapacidade( patio.getCapacidade() );
+        patioResponse.setEndereco( patio.getEndereco() );
+        patioResponse.setId( patio.getId() );
+        patioResponse.setNome( patio.getNome() );
 
-        return patioResponseDTO;
+        return patioResponse;
     }
 
     @Override
-    public List<PatioResponseDTO> toResponseList(List<Patio> patios) {
+    public List<PatioResponse> toResponseList(List<Patio> patios) {
         if ( patios == null ) {
             return null;
         }
 
-        List<PatioResponseDTO> list = new ArrayList<PatioResponseDTO>( patios.size() );
+        List<PatioResponse> list = new ArrayList<PatioResponse>( patios.size() );
         for ( Patio patio : patios ) {
             list.add( toResponse( patio ) );
         }
