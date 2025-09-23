@@ -6,6 +6,8 @@ Henzo Boschiero Puchetti - Rm555179
 
 Luann Domingos Mariano - Rm558548
 
+Caio Cesar Rosa Nyimi - Rm556331
+
 ## 📘 Descrição do Projeto
 
 Este projeto é uma API REST desenvolvida em Java com Spring Boot para automatizar o controle de entrada, saída e posicionamento de motocicletas nos pátios da Mottu. A solução tem como objetivo eliminar processos manuais e tornar a gestão dos pátios mais eficiente, segura e escalável.
@@ -20,9 +22,9 @@ A Mottu gerencia centenas de motos em pátios espalhados pelo Brasil e México. 
 
 ## ✅ Solução
 
-A API proposta integra um sistema com tecnologia de **Leitura Automática de Placas (LPR)** e uma **plataforma web** que permite:
+A API proposta integra um sistema com tecnologia que permite:
 
-- Registro automático da entrada e saída de motos;
+- Registro da entrada e saída de motos;
 - Mapeamento e rastreamento das vagas em tempo real;
 - Visibilidade completa da situação dos pátios;
 - Integração com o sistema interno da Mottu para vincular motos a operadores.
@@ -37,6 +39,9 @@ A API proposta integra um sistema com tecnologia de **Leitura Automática de Pla
   - Spring Data JPA
   - Bean Validation
   - Spring Cache
+  - Thymeleaf
+  - Flyway
+  - Spring Security
 - **Banco de Dados H2 (em memória)**
 - **Lombok**
 - **MapStruct**
@@ -48,6 +53,7 @@ A API proposta integra um sistema com tecnologia de **Leitura Automática de Pla
 
 ```
 com.fiap.mottu_patio
+├── auth
 ├── config
 ├── controller
 ├── dto
@@ -55,6 +61,7 @@ com.fiap.mottu_patio
 ├── mapper
 ├── model
 ├── repository
+├── security
 ├── service
 └── specification
 ```
@@ -87,36 +94,35 @@ com.fiap.mottu_patio
 
 ## 🧪 Exemplos de Requisições (via Postman)
 
-### 📦 Pátios
+### 🔐 Autenticação
 
-#### POST `/api/patios`
+#### POST `/register`
 ```json
 {
-  "nome": "Patio da VP",
-  "endereco": "Rua das Flores, 123",
-  "capacidade": 30
+  "nome": "João Silva",
+  "email": "joao@email.com",
+  "senha": "123456",
+  "tipoUsuario": "CLIENTE"
 }
 ```
 
-#### GET `/api/patios`
-```http
-http://localhost:8080/api/patios
+#### POST `/login`
+```json
+{
+  "email": "joao@email.com",
+  "senha": "123456"
+}
 ```
-
----
-
-### 🧠 Vagas
-
-#### GET `/vagas/patio/1/formatado`
-```http
-http://localhost:8080/vagas/patio/1/formatado
+Resposta:
+```json
+{
+  "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
 ```
-
----
 
 ### 🏍️ Motos
 
-#### POST `/api/motos`
+#### POST `/motos`
 ```json
 {
   "placa": "ABC1234",
@@ -127,31 +133,203 @@ http://localhost:8080/vagas/patio/1/formatado
 }
 ```
 
-#### GET `/api/motos`
+#### GET `/motos`
 ```http
-http://localhost:8080/api/motos
+http://localhost:8080/motos
 ```
 
----
+#### GET `/motos/{id}`
+```http
+http://localhost:8080/motos/1
+```
 
-### 📷 Eventos LPR
-
-#### POST `/api/eventosLPR` (Entrada)
+#### PUT `motos/{id}`
 ```json
 {
-  "tipoEvento": "ENTRADA",
-  "placa": "ABC1234",
-  "vaga": "A:1"
+  "placa": "XYZ5678",
+  "modelo": "XJ6",
+  "cor": "preta",
+  "ano": 2024,
+  "patioId": 2
 }
 ```
 
-#### POST `/api/eventosLPR` (Saída)
+#### DELETE `motos/{id}`
+```http
+http://localhost:8080/motos/1
+```
+
+### 📦 Pátios
+
+#### POST `/patios`
 ```json
 {
-  "tipoEvento": "SAIDA",
-  "placa": "ABC1234"
+  "nome": "Pátio Central",
+  "endereco": "Rua das Motos, 123",
+  "capacidade": 40
 }
 ```
+
+#### GET `/patios`
+```http
+http://localhost:8080/patios
+```
+
+#### GET `/patios/{id}`
+```http
+http://localhost:8080/patios/1
+```
+
+#### PUT `/patios/{id}`
+```json
+{
+  "nome": "Pátio Atualizado",
+  "endereco": "Rua Nova, 456",
+  "capacidade": 50
+}
+```
+
+#### DELETE `/patios/{id}`
+```http
+http://localhost:8080/patios/1
+```
+
+### 🧠 Vagas
+
+#### POST `/vagas`
+```json
+{
+  "codigo": "A:1",
+  "identificador": "Vaga A1",
+  "patioId": 1
+}
+```
+
+#### GET `/vagas`
+```http
+http://localhost:8080/vagas
+```
+
+#### GET `/vagas/{id}`
+```http
+http://localhost:8080/vagas/1
+```
+
+#### PUT `/vagas/{id}`
+```json
+{
+  "codigo": "B:2",
+  "identificador": "Vaga B2",
+  "patioId": 1
+}
+```
+
+#### DELETE `/vagas/{id}`
+```http
+http://localhost:8080/vagas/1
+```
+
+### 📦 Aluguel
+
+#### POST `/aluguel`
+```json
+{
+  "motoId": 1,
+  "clienteId": 2,
+  "dataInicio": "2025-09-23",
+  "dataFim": "2025-09-30"
+}
+```
+
+#### GET `/aluguel`
+```http
+http://localhost:8080/aluguel
+```
+
+#### GET `/aluguel/{id}`
+```http
+http://localhost:8080/aluguel/1
+```
+
+#### PUT `/aluguel/{id}`
+{
+  "dataFim": "2025-10-05"
+}
+
+#### DELETE `aluguel/{id}`
+```http
+http://localhost:8080/aluguel/1
+```
+
+### 🛠️ Manutenção
+
+#### POST `/manutencao`
+```json
+{
+  "motoId": 1,
+  "descricao": "Troca de óleo",
+  "data": "2025-09-20"
+}
+```
+
+#### GET `/manutencao`
+```http
+http://localhost:8080/manutencao
+```
+
+#### GET `/manutencao/{id}`
+```http
+http://localhost:8080/manutencao/1
+```
+
+#### PUT `/manutencao/{id}`
+```json
+{
+  "descricao": "Revisão geral",
+  "data": "2025-09-25"
+}
+```
+
+#### DELETE `/manutencao/{id}`
+```http
+http://localhost:8080/manutencao/1
+```
+
+### 👤 Usuários
+
+#### POST `/users`
+```json
+{
+  "username": "joaosilva",
+  "password": "senha123",
+  "role": "CLIENTE"
+}
+```
+
+#### GET `/users`
+```http
+http://localhost:8080/users
+```
+
+#### GET `/users/{id}`
+```http
+http://localhost:8080/users/1
+```
+
+#### PUT `/users/{id}`
+```json
+{
+  "username": "joaosilva_atualizado",
+  "password": "novaSenha456",
+  "role": "ADMIN"
+}
+```
+
+#### DELETE `/users/{id}`
+```http
+http://localhost:8080/users/1
+```
+
 
 ### ✨ Endpoints
 
@@ -169,16 +347,38 @@ http://localhost:8080/api/motos
 - `PUT /{id}` - Atualizar (inclusive vagas)
 - `DELETE /{id}` - Deletar
 
-### 🧠 Eventos LPR (`/api/eventosLPR`)
-- `POST` - Registrar entrada/saída da moto via placa
-- `GET` - Listar com filtros por tipo, placa e paginação
+### 📊 Vagas (`/api/vagas`)
+- `POST` - Criar vaga
+- `GET` - Listar todos
 - `GET /{id}` - Buscar por ID
-- `PUT /{id}` - Atualizar evento
-- `DELETE /{id}` - Remover evento
+- `PUT /{id}` - Atualizar
+- `DELETE /{id}` - Deletar
 
-### 📊 Vagas (`/vagas/patio/{id}/formatado`)
-- `GET` - Ver vagas agrupadas por fileira e ocupação
+### 📦 Aluguel (`/api/alugueis`)
+- `POST` - Criar aluguel
+- `GET` - Listar todos
+- `GET /{id}` - Buscar por ID
+- `PUT /{id}` - Atualizar
+- `DELETE /{id}` - Cancelar aluguel
 
+### 🛠️ Manutenção (`/api/manutencoes`)
+- `POST` - Registrar manutenção
+- `GET` - Listar todas
+- `GET /{id}` - Buscar por ID
+- `PUT /{id}` - Atualizar
+- `DELETE /{id}` - Remover manutenção
+
+### 👤 Usuários (`/api/users`)
+- `POST` - Criar usuário
+- `GET` - Listar todos
+- `GET /{id}` - Buscar por ID
+- `PUT /{id}` - Atualizar
+- `DELETE /{id}` - Deletar
+
+### 🔐 Autenticação
+- `POST /api/register` - Registrar novo usuário
+- `POST /api/login` - Autenticar e obter token JWT
+- 
 ---
 
 ## ⚙️ Como Rodar o Projeto
@@ -191,8 +391,8 @@ http://localhost:8080/api/motos
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/mottu-patio.git
-cd mottu-patio
+git clone https://github.com/CaiocrNyimi/API-Mottu.git
+cd API-Mottu
 
 # Compile o projeto
 mvn clean install
@@ -208,7 +408,6 @@ A API estará disponível em:
 
 ## 🧠 Futuras Melhorias
 
-- ✅ **Implementar autenticação e autorização** para controle de acesso à API;
 - ✅ **Criar dashboard visual** com Spring + React para supervisão dos pátios em tempo real;
 - ✅ **Integrar com API externa de leitura de motos** (fornecida pela Mottu ou terceiros) para automatizar o processo de entrada e saída, substituindo o envio manual da placa via request.
 - ✅ **Deixar todos os campos em ingles**
