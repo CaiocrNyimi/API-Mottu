@@ -1,8 +1,10 @@
 package com.fiap.mottu_patio.controller;
 
 import com.fiap.mottu_patio.dto.MotoRequest;
+import com.fiap.mottu_patio.dto.MotoResponse;
 import com.fiap.mottu_patio.exception.BusinessException;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
+import com.fiap.mottu_patio.mapper.MotoMapper;
 import com.fiap.mottu_patio.model.Moto;
 import com.fiap.mottu_patio.model.Patio;
 import com.fiap.mottu_patio.model.enums.ModeloMoto;
@@ -21,23 +23,27 @@ public class MotoRestController {
 
     private final MotoService motoService;
     private final PatioService patioService;
+    private final MotoMapper motoMapper;
 
     @Autowired
-    public MotoRestController(MotoService motoService, PatioService patioService) {
+    public MotoRestController(MotoService motoService, PatioService patioService, MotoMapper motoMapper) {
         this.motoService = motoService;
         this.patioService = patioService;
+        this.motoMapper = motoMapper;
     }
 
     @GetMapping
-    public ResponseEntity<List<Moto>> listarTodas() {
-        return ResponseEntity.ok(motoService.findAll());
+    public ResponseEntity<List<MotoResponse>> listarTodas() {
+        List<Moto> motos = motoService.findAll();
+        List<MotoResponse> response = motoMapper.toResponseList(motos);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Moto> buscarPorId(@PathVariable Long id) {
-        return motoService.findById(id)
-                .map(ResponseEntity::ok)
+    public ResponseEntity<MotoResponse> buscarPorId(@PathVariable Long id) {
+        Moto moto = motoService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada."));
+        return ResponseEntity.ok(motoMapper.toResponse(moto));
     }
 
     @PostMapping
@@ -52,7 +58,8 @@ public class MotoRestController {
             moto.setQuilometragem(request.getQuilometragem());
             moto.setStatus(Status.DISPONIVEL);
             moto.setPatio(patio);
-            return ResponseEntity.ok(motoService.save(moto));
+            Moto saved = motoService.save(moto);
+            return ResponseEntity.ok(motoMapper.toResponse(saved));
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
@@ -70,7 +77,8 @@ public class MotoRestController {
             moto.setAno(request.getAno());
             moto.setQuilometragem(request.getQuilometragem());
             moto.setPatio(patio);
-            return ResponseEntity.ok(motoService.save(moto));
+            Moto updated = motoService.save(moto);
+            return ResponseEntity.ok(motoMapper.toResponse(updated));
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }

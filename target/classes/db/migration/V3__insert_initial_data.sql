@@ -5,7 +5,7 @@ INSERT INTO vaga (identificador, ocupada, codigo, patio_id)
 VALUES ('VAGA-A01', TRUE, 'A01', 1);
 
 INSERT INTO vaga (identificador, ocupada, codigo, patio_id)
-VALUES ('VAGA-A02', FALSE, 'A02', 1);
+VALUES ('VAGA-A02', TRUE, 'A02', 1);
 
 INSERT INTO vaga (identificador, ocupada, codigo, patio_id)
 VALUES ('VAGA-A03', FALSE, 'A03', 1);

@@ -1,6 +1,7 @@
 package com.fiap.mottu_patio.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fiap.mottu_patio.model.enums.ModeloMoto;
 import com.fiap.mottu_patio.model.enums.Status;
 import jakarta.validation.constraints.Min;
@@ -49,5 +50,6 @@ public class Moto {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vaga_id")
+    @JsonManagedReference
     private Vaga vaga;
 }

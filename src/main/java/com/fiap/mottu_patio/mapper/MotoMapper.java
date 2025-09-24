@@ -1,29 +1,18 @@
 package com.fiap.mottu_patio.mapper;
 
-import com.fiap.mottu_patio.dto.MotoRequest;
 import com.fiap.mottu_patio.dto.MotoResponse;
 import com.fiap.mottu_patio.model.Moto;
-import com.fiap.mottu_patio.model.Patio;
-import com.fiap.mottu_patio.repository.PatioRepository;
-
 import org.mapstruct.*;
+
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public abstract class MotoMapper {
+public interface MotoMapper {
 
-    @Mapping(target = "patio", expression = "java(mapPatio(request.getPatioId(), patioRepository))")
-    public abstract Moto toEntity(MotoRequest request, @Context PatioRepository patioRepository);
+    @Mapping(source = "modelo", target = "modelo")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "vaga.codigo", target = "vagaCodigo")
+    MotoResponse toResponse(Moto moto);
 
-    @Mapping(source = "patio.id", target = "idPatio")
-    @Mapping(source = "patio.nome", target = "nomePatio")
-    @Mapping(target = "vagaAtual", expression = "java(moto.getVaga() != null ? moto.getVaga().getCodigo() : null)")
-    public abstract MotoResponse toResponse(Moto moto);
-
-    public abstract List<MotoResponse> toResponseList(List<Moto> motos);
-
-    protected Patio mapPatio(Long patioId, @Context PatioRepository patioRepository) {
-        return patioRepository.findById(patioId)
-                .orElseThrow(() -> new RuntimeException("Pátio não encontrado com id: " + patioId));
-    }
+    List<MotoResponse> toResponseList(List<Moto> motos);
 }

@@ -1,5 +1,6 @@
 package com.fiap.mottu_patio.model;
 
+import com.fiap.mottu_patio.model.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -36,5 +37,5 @@ public class User {
     @NotNull(message = "O papel do usuário é obrigatório")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role;
+    private Role role;
 }

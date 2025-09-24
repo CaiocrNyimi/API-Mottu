@@ -1,5 +1,6 @@
 package com.fiap.mottu_patio.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -33,5 +34,6 @@ public class Vaga {
     private Patio patio;
 
     @OneToOne(mappedBy = "vaga", cascade = CascadeType.ALL)
+    @JsonBackReference
     private Moto moto;
 }
