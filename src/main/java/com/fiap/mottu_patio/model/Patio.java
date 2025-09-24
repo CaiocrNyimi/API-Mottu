@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -29,6 +31,7 @@ public class Patio {
     private int vagasDisponiveis;
 
     @OneToMany(mappedBy = "patio", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Vaga> vagas;
 
     @PostPersist

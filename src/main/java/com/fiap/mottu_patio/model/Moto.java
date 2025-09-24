@@ -1,5 +1,6 @@
 package com.fiap.mottu_patio.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fiap.mottu_patio.model.enums.Status;
 import jakarta.validation.constraints.Min;
 import jakarta.persistence.*;
@@ -44,10 +45,12 @@ public class Moto {
 
     @NotNull(message = "O pátio associado é obrigatório")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "patio_id", nullable = false)
     private Patio patio;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "vaga_id")
     private Vaga vaga;
 }
