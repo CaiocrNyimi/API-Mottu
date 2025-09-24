@@ -101,7 +101,7 @@ Resposta:
 #### POST `/api/motos`
 ```json
 {
-  "placa": "ABC1230",
+  "placa": "ABC-1230",
   "modelo": "MOTTU_SPORT",
   "ano": 2023,
   "quilometragem": 15000,
@@ -123,7 +123,7 @@ http://localhost:8080/api/motos/1
 #### PUT `/api/motos/{id}`
 ```json
 {
-  "placa": "ABC1230",
+  "placa": "ABC-1230",
   "modelo": "MOTTU_E",
   "ano": 2023,
   "quilometragem": 15000,
