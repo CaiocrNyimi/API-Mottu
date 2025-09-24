@@ -1,6 +1,7 @@
 package com.fiap.mottu_patio.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fiap.mottu_patio.model.enums.ModeloMoto;
 import com.fiap.mottu_patio.model.enums.Status;
 import jakarta.validation.constraints.Min;
 import jakarta.persistence.*;
@@ -23,13 +24,10 @@ public class Moto {
     @Column(nullable = false, unique = true)
     private String placa;
 
-    @NotBlank(message = "O modelo da moto é obrigatório")
+    @NotNull(message = "O modelo da moto é obrigatório")
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String modelo;
-
-    @NotBlank(message = "A cor da moto é obrigatória")
-    @Column(nullable = false)
-    private String cor;
+    private ModeloMoto modelo;
 
     @NotNull(message = "O ano da moto é obrigatório")
     @Column(nullable = false)
@@ -50,7 +48,6 @@ public class Moto {
     private Patio patio;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     @JoinColumn(name = "vaga_id")
     private Vaga vaga;
 }

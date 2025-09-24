@@ -18,22 +18,24 @@ CREATE TABLE vaga (
 CREATE TABLE app_user (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(255) NOT NULL
+    role VARCHAR(255) NOT NULL,
+    CHECK (role IN ('ADMIN', 'CLIENTE'))
 );
 
 CREATE TABLE moto (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     placa VARCHAR(255) NOT NULL UNIQUE,
     modelo VARCHAR(255) NOT NULL,
-    cor VARCHAR(255) NOT NULL,
     ano INT NOT NULL,
     quilometragem INT NOT NULL,
     status VARCHAR(255) NOT NULL,
     patio_id BIGINT NOT NULL,
     vaga_id BIGINT,
     FOREIGN KEY (patio_id) REFERENCES patio(id),
-    FOREIGN KEY (vaga_id) REFERENCES vaga(id)
+    FOREIGN KEY (vaga_id) REFERENCES vaga(id),
+    CHECK (modelo IN ('MOTTU_SPORT', 'MOTTU_E', 'MOTTU_POP'))
 );
 
 CREATE TABLE aluguel (

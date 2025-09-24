@@ -15,7 +15,7 @@ public class AluguelMapper {
                 .userId(aluguel.getUser().getId())
                 .userName(aluguel.getUser().getUsername())
                 .motoId(aluguel.getMoto().getId())
-                .motoModel(aluguel.getMoto().getModelo())
+                .motoModel(aluguel.getMoto().getModelo().getDescricao())
                 .startDate(aluguel.getStartDate())
                 .endDate(aluguel.getEndDate())
                 .status(aluguel.getStatus())

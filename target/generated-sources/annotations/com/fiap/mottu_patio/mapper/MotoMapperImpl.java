@@ -4,6 +4,7 @@ import com.fiap.mottu_patio.dto.MotoRequest;
 import com.fiap.mottu_patio.dto.MotoResponse;
 import com.fiap.mottu_patio.model.Moto;
 import com.fiap.mottu_patio.model.Patio;
+import com.fiap.mottu_patio.model.enums.ModeloMoto;
 import com.fiap.mottu_patio.repository.PatioRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-09-23T21:12:58-0300",
-    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.43.0.v20250819-1513, environment: Java 21.0.8 (Eclipse Adoptium)"
+    date = "2025-09-23T22:01:16-0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.15 (Microsoft)"
 )
 @Component
 public class MotoMapperImpl extends MotoMapper {
@@ -26,10 +27,11 @@ public class MotoMapperImpl extends MotoMapper {
 
         Moto.MotoBuilder moto = Moto.builder();
 
-        moto.ano( request.getAno() );
-        moto.cor( request.getCor() );
-        moto.modelo( request.getModelo() );
         moto.placa( request.getPlaca() );
+        if ( request.getModelo() != null ) {
+            moto.modelo( Enum.valueOf( ModeloMoto.class, request.getModelo() ) );
+        }
+        moto.ano( request.getAno() );
         moto.quilometragem( request.getQuilometragem() );
 
         moto.patio( mapPatio(request.getPatioId(), patioRepository) );
@@ -47,11 +49,12 @@ public class MotoMapperImpl extends MotoMapper {
 
         motoResponse.setIdPatio( motoPatioId( moto ) );
         motoResponse.setNomePatio( motoPatioNome( moto ) );
-        motoResponse.setAno( moto.getAno() );
-        motoResponse.setCor( moto.getCor() );
         motoResponse.setId( moto.getId() );
-        motoResponse.setModelo( moto.getModelo() );
         motoResponse.setPlaca( moto.getPlaca() );
+        if ( moto.getModelo() != null ) {
+            motoResponse.setModelo( moto.getModelo().name() );
+        }
+        motoResponse.setAno( moto.getAno() );
         motoResponse.setQuilometragem( moto.getQuilometragem() );
         if ( moto.getStatus() != null ) {
             motoResponse.setStatus( moto.getStatus().name() );

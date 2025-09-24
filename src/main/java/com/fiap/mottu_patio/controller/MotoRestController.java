@@ -5,6 +5,7 @@ import com.fiap.mottu_patio.exception.BusinessException;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Moto;
 import com.fiap.mottu_patio.model.Patio;
+import com.fiap.mottu_patio.model.enums.ModeloMoto;
 import com.fiap.mottu_patio.model.enums.Status;
 import com.fiap.mottu_patio.service.MotoService;
 import com.fiap.mottu_patio.service.PatioService;
@@ -46,8 +47,7 @@ public class MotoRestController {
                     .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
             Moto moto = new Moto();
             moto.setPlaca(request.getPlaca());
-            moto.setModelo(request.getModelo());
-            moto.setCor(request.getCor());
+            moto.setModelo(ModeloMoto.valueOf(request.getModelo()));
             moto.setAno(request.getAno());
             moto.setQuilometragem(request.getQuilometragem());
             moto.setStatus(Status.DISPONIVEL);
@@ -66,8 +66,7 @@ public class MotoRestController {
             Patio patio = patioService.findById(request.getPatioId())
                     .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
             moto.setPlaca(request.getPlaca());
-            moto.setModelo(request.getModelo());
-            moto.setCor(request.getCor());
+            moto.setModelo(ModeloMoto.valueOf(request.getModelo()));
             moto.setAno(request.getAno());
             moto.setQuilometragem(request.getQuilometragem());
             moto.setPatio(patio);

@@ -83,11 +83,8 @@ public class MotoController {
             if (moto.getPlaca() == null || moto.getPlaca().isEmpty()) {
                 throw new IllegalArgumentException("O campo 'Placa' não pode ser vazio.");
             }
-            if (moto.getModelo() == null || moto.getModelo().isEmpty()) {
+            if (moto.getModelo() == null) {
                 throw new IllegalArgumentException("O campo 'Modelo' não pode ser vazio.");
-            }
-            if (moto.getCor() == null || moto.getCor().isEmpty()) {
-                throw new IllegalArgumentException("O campo 'Cor' não pode ser vazio.");
             }
             if (moto.getAno() == null) {
                 throw new IllegalArgumentException("O campo 'Ano' não pode ser vazio.");
