@@ -96,7 +96,7 @@ com.fiap.mottu_patio
 
 ### 🔐 Autenticação
 
-#### POST `/register`
+#### POST `/api/auth/register`
 ```json
 {
   "nome": "João Silva",
@@ -106,7 +106,7 @@ com.fiap.mottu_patio
 }
 ```
 
-#### POST `/login`
+#### POST `/api/auth/login`
 ```json
 {
   "email": "joao@email.com",
@@ -122,7 +122,7 @@ Resposta:
 
 ### 🏍️ Motos
 
-#### POST `/motos`
+#### POST `/api/motos`
 ```json
 {
   "placa": "ABC1234",
@@ -133,17 +133,17 @@ Resposta:
 }
 ```
 
-#### GET `/motos`
+#### GET `/api/motos`
 ```http
 http://localhost:8080/motos
 ```
 
-#### GET `/motos/{id}`
+#### GET `/api/motos/{id}`
 ```http
 http://localhost:8080/motos/1
 ```
 
-#### PUT `motos/{id}`
+#### PUT `/api/motos/{id}`
 ```json
 {
   "placa": "XYZ5678",
@@ -154,14 +154,14 @@ http://localhost:8080/motos/1
 }
 ```
 
-#### DELETE `motos/{id}`
+#### DELETE `/api/motos/{id}`
 ```http
 http://localhost:8080/motos/1
 ```
 
 ### 📦 Pátios
 
-#### POST `/patios`
+#### POST `/api/patios`
 ```json
 {
   "nome": "Pátio Central",
@@ -170,17 +170,17 @@ http://localhost:8080/motos/1
 }
 ```
 
-#### GET `/patios`
+#### GET /api/patios`
 ```http
 http://localhost:8080/patios
 ```
 
-#### GET `/patios/{id}`
+#### GET `/api/patios/{id}`
 ```http
 http://localhost:8080/patios/1
 ```
 
-#### PUT `/patios/{id}`
+#### PUT `/api/patios/{id}`
 ```json
 {
   "nome": "Pátio Atualizado",
@@ -189,14 +189,14 @@ http://localhost:8080/patios/1
 }
 ```
 
-#### DELETE `/patios/{id}`
+#### DELETE `/api/patios/{id}`
 ```http
 http://localhost:8080/patios/1
 ```
 
 ### 🧠 Vagas
 
-#### POST `/vagas`
+#### POST /api/vagas`
 ```json
 {
   "codigo": "A:1",
@@ -205,17 +205,17 @@ http://localhost:8080/patios/1
 }
 ```
 
-#### GET `/vagas`
+#### GET `/api/vagas`
 ```http
 http://localhost:8080/vagas
 ```
 
-#### GET `/vagas/{id}`
+#### GET /api/vagas/{id}`
 ```http
 http://localhost:8080/vagas/1
 ```
 
-#### PUT `/vagas/{id}`
+#### PUT /api/vagas/{id}`
 ```json
 {
   "codigo": "B:2",
@@ -224,14 +224,14 @@ http://localhost:8080/vagas/1
 }
 ```
 
-#### DELETE `/vagas/{id}`
+#### DELETE /api/vagas/{id}`
 ```http
 http://localhost:8080/vagas/1
 ```
 
 ### 📦 Aluguel
 
-#### POST `/aluguel`
+#### POST `/api/aluguel`
 ```json
 {
   "motoId": 1,
@@ -241,29 +241,29 @@ http://localhost:8080/vagas/1
 }
 ```
 
-#### GET `/aluguel`
+#### GET `/api/aluguel`
 ```http
 http://localhost:8080/aluguel
 ```
 
-#### GET `/aluguel/{id}`
+#### GET `/api/aluguel/{id}`
 ```http
 http://localhost:8080/aluguel/1
 ```
 
-#### PUT `/aluguel/{id}`
+#### PUT `/api/aluguel/{id}`
 {
   "dataFim": "2025-10-05"
 }
 
-#### DELETE `aluguel/{id}`
+#### DELETE `/api/aluguel/{id}`
 ```http
 http://localhost:8080/aluguel/1
 ```
 
 ### 🛠️ Manutenção
 
-#### POST `/manutencao`
+#### POST `/api/manutencao`
 ```json
 {
   "motoId": 1,
@@ -272,17 +272,17 @@ http://localhost:8080/aluguel/1
 }
 ```
 
-#### GET `/manutencao`
+#### GET `/api/manutencao`
 ```http
 http://localhost:8080/manutencao
 ```
 
-#### GET `/manutencao/{id}`
+#### GET `/api/manutencao/{id}`
 ```http
 http://localhost:8080/manutencao/1
 ```
 
-#### PUT `/manutencao/{id}`
+#### PUT `/api/manutencao/{id}`
 ```json
 {
   "descricao": "Revisão geral",
@@ -290,14 +290,14 @@ http://localhost:8080/manutencao/1
 }
 ```
 
-#### DELETE `/manutencao/{id}`
+#### DELETE `/api/manutencao/{id}`
 ```http
 http://localhost:8080/manutencao/1
 ```
 
 ### 👤 Usuários
 
-#### POST `/users`
+#### POST `/api/users`
 ```json
 {
   "username": "joaosilva",
@@ -306,17 +306,17 @@ http://localhost:8080/manutencao/1
 }
 ```
 
-#### GET `/users`
+#### GET `/api/users`
 ```http
 http://localhost:8080/users
 ```
 
-#### GET `/users/{id}`
+#### GET `/api/users/{id}`
 ```http
 http://localhost:8080/users/1
 ```
 
-#### PUT `/users/{id}`
+#### PUT `/api/users/{id}`
 ```json
 {
   "username": "joaosilva_atualizado",
@@ -325,7 +325,7 @@ http://localhost:8080/users/1
 }
 ```
 
-#### DELETE `/users/{id}`
+#### DELETE `/api/users/{id}`
 ```http
 http://localhost:8080/users/1
 ```
@@ -376,8 +376,8 @@ http://localhost:8080/users/1
 - `DELETE /{id}` - Deletar
 
 ### 🔐 Autenticação
-- `POST /api/register` - Registrar novo usuário
-- `POST /api/login` - Autenticar e obter token JWT
+- `POST /api/auth/register` - Registrar novo usuário
+- `POST /api/auth/login` - Autenticar e obter token JWT
 - 
 ---
 
@@ -403,8 +403,6 @@ mvn spring-boot:run
 
 A API estará disponível em:  
 📍 `http://localhost:8080`
-
----
 
 ## 🧠 Futuras Melhorias
 
