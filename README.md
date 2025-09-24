@@ -75,24 +75,24 @@ com.fiap.mottu_patio
 #### POST `/api/auth/register`
 ```json
 {
-  "nome": "João Silva",
-  "email": "joao@email.com",
-  "senha": "123456",
-  "tipoUsuario": "CLIENTE"
+  "username": "Admin da Silva",
+  "email": "adminsilva@email.com",
+  "password": "SenhaSegura",
+  "role": "ADMIN"
 }
 ```
 
 #### POST `/api/auth/login`
 ```json
 {
-  "email": "joao@email.com",
-  "senha": "123456"
+  "email": "adminsilva@email.com",
+  "password": "SenhaSegura"
 }
 ```
 Resposta:
 ```json
 {
-  "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    "message": "Login realizado com sucesso"
 }
 ```
 
@@ -101,38 +101,40 @@ Resposta:
 #### POST `/api/motos`
 ```json
 {
-  "placa": "ABC1234",
-  "modelo": "Honda azul",
-  "cor": "azul",
-  "ano": 2025,
+  "placa": "ABC1230",
+  "modelo": "MOTTU_SPORT",
+  "ano": 2023,
+  "quilometragem": 15000,
+  "status": "DISPONIVEL",
   "patioId": 1
 }
 ```
 
 #### GET `/api/motos`
 ```http
-http://localhost:8080/motos
+http://localhost:8080/api/motos
 ```
 
 #### GET `/api/motos/{id}`
 ```http
-http://localhost:8080/motos/1
+http://localhost:8080/api/motos/1
 ```
 
 #### PUT `/api/motos/{id}`
 ```json
 {
-  "placa": "XYZ5678",
-  "modelo": "XJ6",
-  "cor": "preta",
-  "ano": 2024,
-  "patioId": 2
+  "placa": "ABC1230",
+  "modelo": "MOTTU_E",
+  "ano": 2023,
+  "quilometragem": 15000,
+  "status": "DISPONIVEL",
+  "patioId": 1
 }
 ```
 
 #### DELETE `/api/motos/{id}`
 ```http
-http://localhost:8080/motos/1
+http://localhost:8080/api/motos/1
 ```
 
 ### 📦 Pátios
@@ -140,34 +142,34 @@ http://localhost:8080/motos/1
 #### POST `/api/patios`
 ```json
 {
-  "nome": "Pátio Central",
-  "endereco": "Rua das Motos, 123",
-  "capacidade": 40
+  "nome": "Patio TOP",
+  "endereco": "Av. Interlagos, 1200 - Zona Sul",
+  "capacidade": 50
 }
 ```
 
 #### GET /api/patios`
 ```http
-http://localhost:8080/patios
+http://localhost:8080/api/patios
 ```
 
 #### GET `/api/patios/{id}`
 ```http
-http://localhost:8080/patios/1
+http://localhost:8080/api/patios/1
 ```
 
 #### PUT `/api/patios/{id}`
 ```json
 {
-  "nome": "Pátio Atualizado",
-  "endereco": "Rua Nova, 456",
+  "nome": "Patio Atualizado",
+  "endereco": "Av. Interlagos, 1200 - Zona Sul",
   "capacidade": 50
 }
 ```
 
 #### DELETE `/api/patios/{id}`
 ```http
-http://localhost:8080/patios/1
+http://localhost:8080/api/patios/1
 ```
 
 ### 🧠 Vagas
@@ -175,34 +177,34 @@ http://localhost:8080/patios/1
 #### POST /api/vagas`
 ```json
 {
-  "codigo": "A:1",
-  "identificador": "Vaga A1",
+  "identificador": "VAGA-A01",
+  "codigo": "A123",
   "patioId": 1
 }
 ```
 
 #### GET `/api/vagas`
 ```http
-http://localhost:8080/vagas
+http://localhost:8080/api/vagas
 ```
 
 #### GET /api/vagas/{id}`
 ```http
-http://localhost:8080/vagas/1
+http://localhost:8080/api/vagas/1
 ```
 
 #### PUT /api/vagas/{id}`
 ```json
 {
-  "codigo": "B:2",
-  "identificador": "Vaga B2",
+  "identificador": "VAGA-A01",
+  "codigo": "A01",
   "patioId": 1
 }
 ```
 
 #### DELETE /api/vagas/{id}`
 ```http
-http://localhost:8080/vagas/1
+http://localhost:8080/api/vagas/1
 ```
 
 ### 📦 Aluguel
@@ -219,12 +221,12 @@ http://localhost:8080/vagas/1
 
 #### GET `/api/aluguel`
 ```http
-http://localhost:8080/aluguel
+http://localhost:8080/api/aluguel
 ```
 
 #### GET `/api/aluguel/{id}`
 ```http
-http://localhost:8080/aluguel/1
+http://localhost:8080/api/aluguel/1
 ```
 
 #### PUT `/api/aluguel/{id}`
@@ -234,7 +236,7 @@ http://localhost:8080/aluguel/1
 
 #### DELETE `/api/aluguel/{id}`
 ```http
-http://localhost:8080/aluguel/1
+http://localhost:8080/api/aluguel/1
 ```
 
 ### 🛠️ Manutenção
@@ -250,12 +252,12 @@ http://localhost:8080/aluguel/1
 
 #### GET `/api/manutencao`
 ```http
-http://localhost:8080/manutencao
+http://localhost:8080/api/manutencao
 ```
 
 #### GET `/api/manutencao/{id}`
 ```http
-http://localhost:8080/manutencao/1
+http://localhost:8080/api/manutencao/1
 ```
 
 #### PUT `/api/manutencao/{id}`
@@ -268,7 +270,7 @@ http://localhost:8080/manutencao/1
 
 #### DELETE `/api/manutencao/{id}`
 ```http
-http://localhost:8080/manutencao/1
+http://localhost:8080/api/manutencao/1
 ```
 
 ### 👤 Usuários
@@ -276,34 +278,36 @@ http://localhost:8080/manutencao/1
 #### POST `/api/users`
 ```json
 {
-  "username": "joaosilva",
-  "password": "senha123",
-  "role": "CLIENTE"
+  "username": "Admin da Silva",
+  "email": "adminsilva@email.com",
+  "password": "SenhaSegura",
+  "role": "ADMIN"
 }
 ```
 
 #### GET `/api/users`
 ```http
-http://localhost:8080/users
+http://localhost:8080/api/users
 ```
 
 #### GET `/api/users/{id}`
 ```http
-http://localhost:8080/users/1
+http://localhost:8080/api/users/1
 ```
 
 #### PUT `/api/users/{id}`
 ```json
 {
-  "username": "joaosilva_atualizado",
-  "password": "novaSenha456",
+  "username": "Admin 2",
+  "email": "adminsilva@email.com",
+  "password": "SenhaSegura",
   "role": "ADMIN"
 }
 ```
 
 #### DELETE `/api/users/{id}`
 ```http
-http://localhost:8080/users/1
+http://localhost:8080/api/users/1
 ```
 
 
