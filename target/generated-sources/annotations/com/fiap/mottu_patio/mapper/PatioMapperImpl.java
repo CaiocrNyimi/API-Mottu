@@ -2,7 +2,9 @@ package com.fiap.mottu_patio.mapper;
 
 import com.fiap.mottu_patio.dto.PatioRequest;
 import com.fiap.mottu_patio.dto.PatioResponse;
+import com.fiap.mottu_patio.dto.VagaResponse;
 import com.fiap.mottu_patio.model.Patio;
+import com.fiap.mottu_patio.model.Vaga;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-09-24T20:07:09-0300",
+    date = "2025-09-24T20:26:56-0300",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.43.0.v20250819-1513, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
@@ -43,6 +45,8 @@ public class PatioMapperImpl implements PatioMapper {
         patioResponse.setEndereco( patio.getEndereco() );
         patioResponse.setId( patio.getId() );
         patioResponse.setNome( patio.getNome() );
+        patioResponse.setVagas( vagaListToVagaResponseList( patio.getVagas() ) );
+        patioResponse.setVagasDisponiveis( patio.getVagasDisponiveis() );
 
         return patioResponse;
     }
@@ -59,5 +63,33 @@ public class PatioMapperImpl implements PatioMapper {
         }
 
         return list;
+    }
+
+    protected VagaResponse vagaToVagaResponse(Vaga vaga) {
+        if ( vaga == null ) {
+            return null;
+        }
+
+        VagaResponse vagaResponse = new VagaResponse();
+
+        vagaResponse.setCodigo( vaga.getCodigo() );
+        vagaResponse.setId( vaga.getId() );
+        vagaResponse.setIdentificador( vaga.getIdentificador() );
+        vagaResponse.setOcupada( vaga.isOcupada() );
+
+        return vagaResponse;
+    }
+
+    protected List<VagaResponse> vagaListToVagaResponseList(List<Vaga> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<VagaResponse> list1 = new ArrayList<VagaResponse>( list.size() );
+        for ( Vaga vaga : list ) {
+            list1.add( vagaToVagaResponse( vaga ) );
+        }
+
+        return list1;
     }
 }

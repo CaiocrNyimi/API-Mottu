@@ -1,5 +1,6 @@
 package com.fiap.mottu_patio.controller;
 
+import com.fiap.mottu_patio.dto.PatioResponse;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Patio;
 import com.fiap.mottu_patio.service.PatioService;
@@ -7,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/patios")
@@ -22,35 +23,39 @@ public class PatioRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Patio>> listarTodos() {
-        return ResponseEntity.ok(patioService.findAll());
+    public ResponseEntity<List<PatioResponse>> listarTodos() {
+        List<Patio> patios = patioService.findAll();
+        List<PatioResponse> response = patios.stream()
+                .map(PatioResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Patio> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<PatioResponse> buscarPorId(@PathVariable Long id) {
         return patioService.findById(id)
-                .map(ResponseEntity::ok)
+                .map(patio -> ResponseEntity.ok(new PatioResponse(patio)))
                 .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
     }
 
     @PostMapping
-    public ResponseEntity<?> criar(@RequestBody Patio patio) {
+    public ResponseEntity<Patio> criar(@RequestBody Patio patio) {
         try {
             validar(patio);
             return ResponseEntity.ok(patioService.save(patio));
         } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Patio patio) {
+    public ResponseEntity<Patio> atualizar(@PathVariable Long id, @RequestBody Patio patio) {
         try {
             validar(patio);
             patio.setId(id);
             return ResponseEntity.ok(patioService.update(id, patio));
         } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
