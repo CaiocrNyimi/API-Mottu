@@ -1,5 +1,6 @@
 package com.fiap.mottu_patio.controller;
 
+import com.fiap.mottu_patio.dto.VagaRequest;
 import com.fiap.mottu_patio.dto.VagaResponse;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Patio;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/vagas")
@@ -26,34 +28,40 @@ public class VagaRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Vaga>> listarTodas() {
-        return ResponseEntity.ok(vagaService.findAll());
+    public ResponseEntity<List<VagaResponse>> listarTodas() {
+        List<Vaga> vagas = vagaService.findAll();
+        List<VagaResponse> response = vagas.stream()
+                .map(VagaResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Vaga> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<VagaResponse> buscarPorId(@PathVariable Long id) {
         return vagaService.findById(id)
-                .map(ResponseEntity::ok)
+                .map(vaga -> ResponseEntity.ok(new VagaResponse(vaga)))
                 .orElseThrow(() -> new ResourceNotFoundException("Vaga não encontrada."));
     }
 
     @PostMapping
-    public ResponseEntity<?> criar(@RequestBody VagaResponse request) {
+    public ResponseEntity<VagaResponse> criar(@RequestBody VagaRequest request) {
         try {
             Patio patio = patioService.findById(request.getPatioId())
                     .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
             Vaga vaga = new Vaga();
             vaga.setIdentificador(request.getIdentificador());
             vaga.setCodigo(request.getCodigo());
+            vaga.setOcupada(false);
             vaga.setPatio(patio);
-            return ResponseEntity.ok(vagaService.save(vaga));
+            Vaga novaVaga = vagaService.save(vaga);
+            return ResponseEntity.ok(new VagaResponse(novaVaga));
         } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody VagaResponse request) {
+    public ResponseEntity<VagaResponse> atualizar(@PathVariable Long id, @RequestBody VagaRequest request) {
         try {
             Vaga vaga = vagaService.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Vaga não encontrada."));
@@ -62,9 +70,10 @@ public class VagaRestController {
             vaga.setIdentificador(request.getIdentificador());
             vaga.setCodigo(request.getCodigo());
             vaga.setPatio(patio);
-            return ResponseEntity.ok(vagaService.save(vaga));
+            Vaga vagaAtualizada = vagaService.save(vaga);
+            return ResponseEntity.ok(new VagaResponse(vagaAtualizada));
         } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
     }
 

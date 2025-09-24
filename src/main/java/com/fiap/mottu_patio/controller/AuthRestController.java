@@ -43,7 +43,7 @@ public class AuthRestController {
 
             String username = userDetails.getUsername();
 
-            return ResponseEntity.ok(new LoginResponse("Login realizado com sucesso", username));
+            return ResponseEntity.ok(new LoginResponse(username, "Login realizado com sucesso"));
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                  .body(new LoginResponse("Credenciais inválidas", null));
