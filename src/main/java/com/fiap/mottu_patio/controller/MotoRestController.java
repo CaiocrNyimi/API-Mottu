@@ -49,15 +49,19 @@ public class MotoRestController {
     @PostMapping
     public ResponseEntity<?> criar(@RequestBody MotoRequest request) {
         try {
-            Patio patio = patioService.findById(request.getPatioId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
             Moto moto = new Moto();
             moto.setPlaca(request.getPlaca());
             moto.setModelo(ModeloMoto.valueOf(request.getModelo()));
             moto.setAno(request.getAno());
             moto.setQuilometragem(request.getQuilometragem());
             moto.setStatus(Status.DISPONIVEL);
-            moto.setPatio(patio);
+            
+            if (request.getPatioId() != null) {
+                Patio patio = patioService.findById(request.getPatioId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
+                moto.setPatio(patio);
+            }
+
             Moto saved = motoService.save(moto);
             return ResponseEntity.ok(motoMapper.toResponse(saved));
         } catch (Exception ex) {
@@ -70,13 +74,20 @@ public class MotoRestController {
         try {
             Moto moto = motoService.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada."));
-            Patio patio = patioService.findById(request.getPatioId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
+            
             moto.setPlaca(request.getPlaca());
             moto.setModelo(ModeloMoto.valueOf(request.getModelo()));
             moto.setAno(request.getAno());
             moto.setQuilometragem(request.getQuilometragem());
-            moto.setPatio(patio);
+
+            if (request.getPatioId() != null) {
+                Patio patio = patioService.findById(request.getPatioId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
+                moto.setPatio(patio);
+            } else {
+                moto.setPatio(null);
+            }
+
             Moto updated = motoService.save(moto);
             return ResponseEntity.ok(motoMapper.toResponse(updated));
         } catch (Exception ex) {
@@ -89,9 +100,11 @@ public class MotoRestController {
         try {
             Moto moto = motoService.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada."));
+            
             if (moto.getStatus() != Status.DISPONIVEL) {
                 throw new BusinessException("Não é possível excluir uma moto que não está disponível.");
             }
+            
             motoService.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (Exception ex) {

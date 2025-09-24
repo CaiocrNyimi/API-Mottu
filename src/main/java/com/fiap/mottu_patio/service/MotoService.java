@@ -1,12 +1,14 @@
 package com.fiap.mottu_patio.service;
 
-import com.fiap.mottu_patio.model.enums.Status;
 import com.fiap.mottu_patio.exception.BusinessException;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Moto;
 import com.fiap.mottu_patio.model.Patio;
+import com.fiap.mottu_patio.model.Vaga;
+import com.fiap.mottu_patio.model.enums.Status;
 import com.fiap.mottu_patio.repository.MotoRepository;
 import com.fiap.mottu_patio.repository.PatioRepository;
+import com.fiap.mottu_patio.repository.VagaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +21,13 @@ public class MotoService {
 
     private final MotoRepository motoRepository;
     private final PatioRepository patioRepository;
+    private final VagaRepository vagaRepository;
 
     @Autowired
-    public MotoService(MotoRepository motoRepository, PatioRepository patioRepository) {
+    public MotoService(MotoRepository motoRepository, PatioRepository patioRepository, VagaRepository vagaRepository) {
         this.motoRepository = motoRepository;
         this.patioRepository = patioRepository;
+        this.vagaRepository = vagaRepository;
     }
 
     public List<Moto> findAll() {
@@ -45,11 +49,26 @@ public class MotoService {
         }
         
         Patio patio = moto.getPatio();
-        if (patio != null) {
-            int vagasOcupadas = motoRepository.countByPatioId(patio.getId());
-            if (vagasOcupadas >= patio.getCapacidade()) {
+        if (patio != null && patio.getId() != null) {
+            Patio patioExistente = patioRepository.findById(patio.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("O pátio selecionado não existe."));
+            
+            Optional<Vaga> vagaDisponivel = patioExistente.getVagas().stream()
+                .filter(vaga -> !vaga.isOcupada())
+                .findFirst();
+
+            if (vagaDisponivel.isPresent()) {
+                Vaga vaga = vagaDisponivel.get();
+                vaga.setOcupada(true);
+                moto.setVaga(vaga);
+                moto.setPatio(patioExistente);
+                vagaRepository.save(vaga);
+            } else {
                 throw new BusinessException("O pátio selecionado está lotado.");
             }
+        } else {
+            moto.setPatio(null);
+            moto.setVaga(null);
         }
         
         if (moto.getStatus() == null) {

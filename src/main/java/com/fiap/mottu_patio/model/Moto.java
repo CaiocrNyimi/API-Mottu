@@ -42,9 +42,7 @@ public class Moto {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @NotNull(message = "O pátio associado é obrigatório")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     @JoinColumn(name = "patio_id", nullable = false)
     private Patio patio;
 

@@ -31,7 +31,7 @@ CREATE TABLE moto (
     ano INT NOT NULL,
     quilometragem INT NOT NULL,
     status VARCHAR(255) NOT NULL,
-    patio_id BIGINT NOT NULL,
+    patio_id BIGINT,
     vaga_id BIGINT,
     FOREIGN KEY (patio_id) REFERENCES patio(id),
     FOREIGN KEY (vaga_id) REFERENCES vaga(id),

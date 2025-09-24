@@ -29,7 +29,7 @@ public class Vaga {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patio_id", nullable = false)
-    @JsonIgnore
+    @JsonBackReference
     @NotNull(message = "O pátio associado é obrigatório")
     private Patio patio;
 

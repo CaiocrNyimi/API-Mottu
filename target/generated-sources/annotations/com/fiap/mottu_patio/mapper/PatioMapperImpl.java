@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-09-23T22:14:39-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.15 (Microsoft)"
+    date = "2025-09-24T19:58:37-0300",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.43.0.v20250819-1513, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class PatioMapperImpl implements PatioMapper {
@@ -24,9 +24,9 @@ public class PatioMapperImpl implements PatioMapper {
 
         Patio.PatioBuilder patio = Patio.builder();
 
-        patio.nome( dto.getNome() );
-        patio.endereco( dto.getEndereco() );
         patio.capacidade( dto.getCapacidade() );
+        patio.endereco( dto.getEndereco() );
+        patio.nome( dto.getNome() );
 
         return patio.build();
     }
@@ -39,10 +39,10 @@ public class PatioMapperImpl implements PatioMapper {
 
         PatioResponse patioResponse = new PatioResponse();
 
+        patioResponse.setCapacidade( patio.getCapacidade() );
+        patioResponse.setEndereco( patio.getEndereco() );
         patioResponse.setId( patio.getId() );
         patioResponse.setNome( patio.getNome() );
-        patioResponse.setEndereco( patio.getEndereco() );
-        patioResponse.setCapacidade( patio.getCapacidade() );
 
         return patioResponse;
     }
