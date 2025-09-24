@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,10 +39,14 @@ public class AuthRestController {
             context.setAuthentication(authentication);
             securityContextRepository.saveContext(context, httpRequest, httpResponse);
 
-            return ResponseEntity.ok(new LoginResponse("Login realizado com sucesso"));
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+            String username = userDetails.getUsername();
+
+            return ResponseEntity.ok(new LoginResponse("Login realizado com sucesso", username));
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                 .body(new LoginResponse("Credenciais inválidas"));
+                                 .body(new LoginResponse("Credenciais inválidas", null));
         }
     }
 }
