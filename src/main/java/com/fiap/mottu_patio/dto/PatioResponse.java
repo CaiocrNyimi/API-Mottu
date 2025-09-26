@@ -18,6 +18,7 @@ public class PatioResponse {
     private List<VagaResponse> vagas;
 
     public PatioResponse(Patio patio) {
+        this.id = patio.getId();
         this.nome = patio.getNome();
         this.endereco = patio.getEndereco();
         this.capacidade = patio.getCapacidade();
