@@ -1,5 +1,5 @@
 INSERT INTO patio (nome, endereco, capacidade, vagas_disponiveis)
-VALUES ('Mottu Pátio Central', 'Avenida Paulista, 1000', 5, 5);
+VALUES ('Mottu Pátio Central', 'Avenida Paulista, 1000', 20, 20);
 
 INSERT INTO vaga (identificador, ocupada, codigo, patio_id)
 VALUES ('VAGA-A01', TRUE, 'A01', 1);
