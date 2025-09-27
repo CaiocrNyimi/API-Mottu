@@ -11,14 +11,14 @@
             <header>
                 <hgroup>
                     <h2>Login</h2>
-                    <p>Entre com seu usuário e senha para continuar.</p>
+                    <p>Entre com seu email e senha para continuar.</p>
                 </hgroup>
             </header>
 
             <form th:action="@{/login}" method="post">
-                <label for="username">
-                    Usuário:
-                    <input type="text" id="username" name="username" required>
+                <label for="email">
+                    Email:
+                    <input type="email" id="email" name="email" required>
                 </label>
 
                 <label for="password">
@@ -31,7 +31,7 @@
 
             <footer style="text-align: center; margin-top: 1rem;">
                 <div th:if="${param.error}" style="color: red;">
-                    <p>Usuário ou senha inválidos. Tente novamente.</p>
+                    <p>Email ou senha inválidos. Tente novamente.</p>
                 </div>
                 <div th:if="${param.logout}" style="color: green;">
                     <p>Você foi desconectado com sucesso.</p>

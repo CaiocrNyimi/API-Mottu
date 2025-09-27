@@ -17,8 +17,13 @@
 
             <form th:action="@{/register}" th:object="${user}" method="post">
                 <label for="username">
-                    Usuário:
+                    Nome de usuário:
                     <input type="text" id="username" th:field="*{username}" required>
+                </label>
+
+                <label for="email">
+                    Email:
+                    <input type="email" id="email" th:field="*{email}" required>
                 </label>
 
                 <label for="password">
