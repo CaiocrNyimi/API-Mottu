@@ -22,11 +22,11 @@
         <p th:text="${error}"></p>
     </article>
 
-    <section th:if="${#lists.isEmpty(aluguels)}">
+    <section th:if="${#lists.isEmpty(alugueis)}">
         <p>Nenhum aluguel registrado no momento.</p>
     </section>
 
-    <section th:if="${not #lists.isEmpty(aluguels)}">
+    <section th:if="${not #lists.isEmpty(alugueis)}">
         <table>
             <thead>
                 <tr>
@@ -40,10 +40,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="aluguel : ${aluguels}">
+                <tr th:each="aluguel : ${alugueis}">
                     <td th:text="${aluguel.id}"></td>
-                    <td th:text="${aluguel.user.username}"></td>
-                    <td th:text="${aluguel.moto.modelo}"></td>
+                    <td th:text="${aluguel.userName}"></td>
+                    <td th:text="${aluguel.motoModel}"></td>
                     <td th:text="${#temporals.format(aluguel.startDate, 'dd/MM/yyyy HH:mm')}"></td>
                     <td th:text="${#temporals.format(aluguel.endDate, 'dd/MM/yyyy HH:mm')}"></td>
                     <td th:text="${aluguel.status}"></td>

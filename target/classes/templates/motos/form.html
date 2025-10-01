@@ -35,12 +35,6 @@
                 </label>
             </div>
 
-            <div class="grid">
-                <label for="cor">
-                    Cor:
-                    <input type="text" id="cor" th:field="*{cor}" required>
-                </label>
-
                 <label for="ano">
                     Ano:
                     <input type="number" id="ano" th:field="*{ano}" required>
@@ -65,11 +59,12 @@
 
             <label for="patio">
                 Pátio:
-                <select id="patio" name="patio" required>
+                <select name="patio" required>
                     <option value="">Selecione um pátio</option>
                     <option th:each="p : ${patios}" th:value="${p.id}" th:text="${p.nome}"
                             th:selected="${moto.patio != null and moto.patio.id == p.id}"></option>
                 </select>
+
             </label>
 
             <div class="grid">

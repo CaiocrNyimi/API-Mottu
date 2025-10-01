@@ -1,6 +1,7 @@
 package com.fiap.mottu_patio.controller;
 
 import com.fiap.mottu_patio.model.enums.Status;
+import com.fiap.mottu_patio.dto.AluguelResponse;
 import com.fiap.mottu_patio.exception.BusinessException;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Aluguel;
@@ -33,7 +34,7 @@ public class AluguelController {
 
     @GetMapping
     public String listAlugueis(Model model) {
-        List<Aluguel> alugueis = aluguelService.findAll();
+        List<AluguelResponse> alugueis = aluguelService.findAllResponses();
         model.addAttribute("alugueis", alugueis);
         return "alugueis/list";
     }
@@ -106,7 +107,7 @@ public class AluguelController {
         }
     }
 
-    @PutMapping("/return/{id}")
+    @PostMapping("/return/{id}")
     public String returnAluguel(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
             aluguelService.returnBike(id);

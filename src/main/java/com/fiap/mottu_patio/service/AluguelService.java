@@ -1,5 +1,6 @@
 package com.fiap.mottu_patio.service;
 
+import com.fiap.mottu_patio.dto.AluguelResponse;
 import com.fiap.mottu_patio.exception.BusinessException;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Aluguel;
@@ -110,4 +111,19 @@ public class AluguelService {
 
         return aluguel;
     }
+
+    public List<AluguelResponse> findAllResponses() {
+        return findAll().stream().map(aluguel -> AluguelResponse.builder()
+            .id(aluguel.getId())
+            .userId(aluguel.getUser().getId())
+            .userName(aluguel.getUser().getUsername())
+            .motoId(aluguel.getMoto().getId())
+            .motoModel(aluguel.getMoto().getModelo().toString())
+            .startDate(aluguel.getStartDate())
+            .endDate(aluguel.getEndDate())
+            .status(aluguel.getStatus())
+            .build()
+        ).toList();
+    }
+
 }

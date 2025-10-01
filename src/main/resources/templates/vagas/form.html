@@ -37,7 +37,7 @@
 
             <label for="patio">
                 Pátio:
-                <select id="patio" name="patio" required>
+                <select id="patioId" name="patioId" required>
                     <option value="">Selecione um pátio</option>
                     <option th:each="p : ${patios}" th:value="${p.id}" th:text="${p.nome}"
                             th:selected="${vaga.patio != null and vaga.patio.id == p.id}"></option>

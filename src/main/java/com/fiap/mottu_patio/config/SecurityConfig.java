@@ -20,11 +20,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
+            .securityContext(security -> security
+                .securityContextRepository(securityContextRepository())
+            )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**", "/register", "/h2-console/**").permitAll()
-                .requestMatchers("/", "/alugueis").hasAnyRole("CLIENTE", "ADMIN")
-                .requestMatchers("/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .requestMatchers("/", "/alugueis/**").authenticated()
+                .anyRequest().hasRole("ADMIN")
             )
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((request, response, authException) -> {

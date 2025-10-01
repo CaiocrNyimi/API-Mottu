@@ -25,7 +25,7 @@
 
             <label for="moto">
                 Moto:
-                <select id="moto" name="moto" required>
+                <select id="motoId" name="motoId" required>
                     <option value="">Selecione uma moto</option>
                     <option th:each="moto : ${motos}" th:value="${moto.id}" th:text="${moto.modelo}"
                             th:selected="${manutencao.moto != null and manutencao.moto.id == moto.id}"></option>
