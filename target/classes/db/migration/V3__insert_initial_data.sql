@@ -22,4 +22,4 @@ INSERT INTO vaga (identificador, ocupada, codigo, patio_id) VALUES ('VAGA-B09', 
 INSERT INTO vaga (identificador, ocupada, codigo, patio_id) VALUES ('VAGA-B10', FALSE, 'B10', 1);
 
 INSERT INTO moto (placa, modelo, ano, quilometragem, status, patio_id, vaga_id) VALUES ('ABC-1234', 'MOTTU_SPORT', 2022, 10000, 'DISPONIVEL', 1, 1);
-INSERT INTO moto (placa, modelo, ano, quilometragem, status, patio_id, vaga_id) VALUES ('XYZ-5678', 'MOTTU_E', 2023, 5000, 'ALUGADA', 1, 2);
+INSERT INTO moto (placa, modelo, ano, quilometragem, status, patio_id, vaga_id) VALUES ('XYZ-5678', 'MOTTU_POP', 2023, 5000, 'DISPONIVEL', 1, 2);
