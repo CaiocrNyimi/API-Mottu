@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-10-01T19:48:00-0300",
-    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.43.0.v20250819-1513, environment: Java 21.0.8 (Eclipse Adoptium)"
+    date = "2025-10-24T22:12:22-0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.15 (Microsoft)"
 )
 @Component
 public class PatioMapperImpl implements PatioMapper {
@@ -26,9 +26,9 @@ public class PatioMapperImpl implements PatioMapper {
 
         Patio.PatioBuilder patio = Patio.builder();
 
-        patio.capacidade( dto.getCapacidade() );
-        patio.endereco( dto.getEndereco() );
         patio.nome( dto.getNome() );
+        patio.endereco( dto.getEndereco() );
+        patio.capacidade( dto.getCapacidade() );
 
         return patio.build();
     }
@@ -41,12 +41,12 @@ public class PatioMapperImpl implements PatioMapper {
 
         PatioResponse patioResponse = new PatioResponse();
 
-        patioResponse.setCapacidade( patio.getCapacidade() );
-        patioResponse.setEndereco( patio.getEndereco() );
         patioResponse.setId( patio.getId() );
         patioResponse.setNome( patio.getNome() );
-        patioResponse.setVagas( vagaListToVagaResponseList( patio.getVagas() ) );
+        patioResponse.setEndereco( patio.getEndereco() );
+        patioResponse.setCapacidade( patio.getCapacidade() );
         patioResponse.setVagasDisponiveis( patio.getVagasDisponiveis() );
+        patioResponse.setVagas( vagaListToVagaResponseList( patio.getVagas() ) );
 
         return patioResponse;
     }
@@ -72,9 +72,9 @@ public class PatioMapperImpl implements PatioMapper {
 
         VagaResponse vagaResponse = new VagaResponse();
 
-        vagaResponse.setCodigo( vaga.getCodigo() );
         vagaResponse.setId( vaga.getId() );
         vagaResponse.setIdentificador( vaga.getIdentificador() );
+        vagaResponse.setCodigo( vaga.getCodigo() );
         vagaResponse.setOcupada( vaga.isOcupada() );
 
         return vagaResponse;

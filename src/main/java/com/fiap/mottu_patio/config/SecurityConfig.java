@@ -12,32 +12,29 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 
+import com.fiap.mottu_patio.exception.RestAuthenticationEntryPoint;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+
+    public SecurityConfig(RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
+        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .securityContext(security -> security
-                .securityContextRepository(securityContextRepository())
-            )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**", "/register", "/h2-console/**").permitAll()
                 .requestMatchers("/", "/alugueis/**").authenticated()
                 .anyRequest().hasRole("ADMIN")
             )
             .exceptionHandling(exception -> exception
-                .authenticationEntryPoint((request, response, authException) -> {
-                    if (request.getRequestURI().startsWith("/api/")) {
-                        response.setContentType("application/json");
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.getWriter().write("{\"error\": \"Acesso não autorizado\"}");
-                    } else {
-                        response.sendRedirect("/login");
-                    }
-                })
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
             )
             .formLogin(form -> form
                 .loginPage("/login")
