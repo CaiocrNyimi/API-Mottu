@@ -49,6 +49,7 @@
                     <td th:text="${aluguel.status}"></td>
                     <td>
                         <form th:if="${aluguel.status == 'Reservado' or aluguel.status == 'Alugado'}"
+                              th:action="@{/alugueis/return/{id}(id=${aluguel.id})}" method="post" style="display:inline;">
                             <button type="submit" class="outline">Devolver</button>
                         </form>
                     </td>
