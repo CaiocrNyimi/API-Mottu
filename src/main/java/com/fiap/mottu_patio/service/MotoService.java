@@ -7,10 +7,12 @@ import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.mapper.MotoMapper;
 import com.fiap.mottu_patio.model.Moto;
 import com.fiap.mottu_patio.model.Patio;
+import com.fiap.mottu_patio.model.Vaga;
 import com.fiap.mottu_patio.model.enums.ModeloMoto;
 import com.fiap.mottu_patio.model.enums.Status;
 import com.fiap.mottu_patio.repository.MotoRepository;
 import com.fiap.mottu_patio.repository.PatioRepository;
+import com.fiap.mottu_patio.repository.VagaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,9 @@ public class MotoService {
 
     @Autowired
     private PatioRepository patioRepository;
+
+    @Autowired
+    private VagaRepository vagaRepository;
 
     @Autowired
     private MotoMapper motoMapper;
@@ -47,6 +52,9 @@ public class MotoService {
             throw new BusinessException("Já existe uma moto com essa placa.");
         }
 
+        Vaga vagaDisponivel = vagaRepository.findFirstByPatioIdAndOcupadaFalse(patio.getId())
+                .orElseThrow(() -> new BusinessException("Não há vagas disponíveis neste pátio."));
+
         Moto moto = new Moto();
         moto.setPlaca(placaNormalizada);
         moto.setModelo(ModeloMoto.valueOf(request.getModelo().toUpperCase()));
@@ -54,8 +62,15 @@ public class MotoService {
         moto.setQuilometragem(request.getQuilometragem());
         moto.setStatus(request.getStatus() != null ? request.getStatus() : Status.DISPONIVEL);
         moto.setPatio(patio);
+        moto.setVaga(vagaDisponivel);
 
-        return motoMapper.toResponse(motoRepository.save(moto));
+        Moto salva = motoRepository.save(moto);
+
+        vagaDisponivel.setMoto(salva);
+        vagaDisponivel.setOcupada(true);
+        vagaRepository.save(vagaDisponivel);
+
+        return motoMapper.toResponse(salva);
     }
 
     public MotoResponse atualizar(Long id, MotoRequest request) {
