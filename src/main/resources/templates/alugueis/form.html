@@ -21,7 +21,6 @@
 
     <form th:action="${aluguel?.id == null} ? @{/alugueis} : @{/alugueis/{id}(id=${aluguel.id})}" th:object="${aluguel}" method="post">
         <input type="hidden" th:field="*{id}">
-        <input type="hidden" name="_method" th:value="${aluguel?.id != null} ? 'put' : 'post'">
 
         <label for="userId">
             Usuário:

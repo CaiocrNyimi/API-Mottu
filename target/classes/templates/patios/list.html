@@ -47,8 +47,7 @@
                         <td th:text="${patio.vagasDisponiveis}"></td>
                         <td>
                             <a th:href="@{/patios/edit/{id}(id=${patio.id})}" class="secondary">Editar</a>
-                            <form th:action="@{/patios/{id}(id=${patio.id})}" method="post" style="display:inline;">
-                                <input type="hidden" name="_method" value="delete">
+                            <form th:action="@{/patios/delete/{id}(id=${patio.id})}" method="post" style="display:inline;">
                                 <button type="submit" class="outline">Excluir</button>
                             </form>
                         </td>

@@ -51,8 +51,7 @@
                         <td th:text="${moto.patio != null ? moto.patio.nome : 'Não vinculado'}"></td>
                         <td>
                             <a th:href="@{/motos/edit/{id}(id=${moto.id})}" class="secondary">Editar</a>
-                            <form th:action="@{/motos/{id}(id=${moto.id})}" method="post" style="display:inline;">
-                                <input type="hidden" name="_method" value="delete">
+                            <form th:action="@{/motos/delete/{id}(id=${moto.id})}" method="post" style="display:inline;">
                                 <button type="submit" class="outline">Excluir</button>
                             </form>
                         </td>

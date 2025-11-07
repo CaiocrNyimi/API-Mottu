@@ -1,6 +1,5 @@
 package com.fiap.mottu_patio.config;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,14 +13,19 @@ import org.springframework.security.web.context.SecurityContextRepository;
 
 import com.fiap.mottu_patio.exception.RestAuthenticationEntryPoint;
 
+import com.fiap.mottu_patio.security.CustomUserDetailsService;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public SecurityConfig(RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
+    public SecurityConfig(RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+                          CustomUserDetailsService customUserDetailsService) {
         this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
@@ -49,6 +53,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
             )
+            .userDetailsService(customUserDetailsService)
             .headers(headers -> headers
                 .frameOptions(frame -> frame.disable())
             );

@@ -21,7 +21,6 @@
 
         <form th:action="${vaga.id == null} ? @{/vagas} : @{/vagas/{id}(id=${vaga.id})}" th:object="${vaga}" method="post">
             <input type="hidden" th:field="*{id}">
-            <input type="hidden" name="_method" th:value="${vaga.id != null} ? 'put' : 'post'">
 
             <div class="grid">
                 <label for="identificador">

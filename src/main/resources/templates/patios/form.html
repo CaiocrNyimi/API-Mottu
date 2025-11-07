@@ -21,7 +21,6 @@
 
         <form th:action="${patio.id == null} ? @{/patios} : @{/patios/{id}(id=${patio.id})}" th:object="${patio}" method="post">
             <input type="hidden" th:field="*{id}">
-            <input type="hidden" name="_method" th:value="${patio.id != null} ? 'put' : 'post'">
 
             <div class="grid">
                 <label for="nome">

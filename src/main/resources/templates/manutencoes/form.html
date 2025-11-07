@@ -21,7 +21,6 @@
 
         <form th:action="${manutencao.id == null} ? @{/manutencoes} : @{/manutencoes/{id}(id=${manutencao.id})}" th:object="${manutencao}" method="post">
             <input type="hidden" th:field="*{id}">
-            <input type="hidden" name="_method" th:value="${manutencao.id != null} ? 'put' : 'post'">
 
             <label for="moto">
                 Moto:
