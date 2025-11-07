@@ -1,12 +1,13 @@
 package com.fiap.mottu_patio.controller;
 
-import com.fiap.mottu_patio.model.enums.Status;
 import com.fiap.mottu_patio.exception.BusinessException;
 import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Moto;
 import com.fiap.mottu_patio.model.Patio;
-import com.fiap.mottu_patio.service.MotoService;
-import com.fiap.mottu_patio.service.PatioService;
+import com.fiap.mottu_patio.model.enums.Status;
+import com.fiap.mottu_patio.repository.MotoRepository;
+import com.fiap.mottu_patio.repository.PatioRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,31 +20,28 @@ import java.util.Optional;
 @RequestMapping("/motos")
 public class MotoController {
 
-    private final MotoService motoService;
-    private final PatioService patioService;
+    @Autowired
+    private MotoRepository motoRepository;
 
     @Autowired
-    public MotoController(MotoService motoService, PatioService patioService) {
-        this.motoService = motoService;
-        this.patioService = patioService;
-    }
+    private PatioRepository patioRepository;
 
     @GetMapping
-    public String listMotos(Model model) {
-        model.addAttribute("motos", motoService.findAll());
+    public String listarMotos(Model model) {
+        model.addAttribute("motos", motoRepository.findAll());
         return "motos/list";
     }
 
     @GetMapping("/new")
-    public String showNewForm(Model model) {
+    public String novaMotoForm(Model model) {
         model.addAttribute("moto", new Moto());
-        model.addAttribute("patios", patioService.findAll());
+        model.addAttribute("patios", patioRepository.findAll());
         return "motos/form";
     }
 
     @GetMapping("/{id}")
-    public String showMotoDetails(@PathVariable("id") Long id, Model model) {
-        Optional<Moto> moto = motoService.findById(id);
+    public String detalhesMoto(@PathVariable Long id, Model model) {
+        Optional<Moto> moto = motoRepository.findById(id);
         if (moto.isPresent()) {
             model.addAttribute("moto", moto.get());
             return "motos/details";
@@ -52,74 +50,75 @@ public class MotoController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Optional<Moto> moto = motoService.findById(id);
+    public String editarMotoForm(@PathVariable Long id, Model model) {
+        Optional<Moto> moto = motoRepository.findById(id);
         if (moto.isPresent()) {
             model.addAttribute("moto", moto.get());
-            model.addAttribute("patios", patioService.findAll());
+            model.addAttribute("patios", patioRepository.findAll());
             return "motos/form";
         }
         return "redirect:/motos";
     }
 
     @PostMapping
-    public String createMoto(@ModelAttribute Moto moto,
-                             @RequestParam(value = "patio", required = false) Long patioId,
-                             Model model) {
-        return saveOrUpdateMoto(moto, patioId, model, true);
+    public String criarMoto(@Valid @ModelAttribute Moto moto,
+                            @RequestParam(required = false) Long patio,
+                            Model model,
+                            RedirectAttributes redirectAttributes) {
+        return processarMoto(null, moto, patio, model, redirectAttributes);
     }
 
-    @PutMapping("/{id}")
-    public String updateMoto(@PathVariable("id") Long id,
-                             @ModelAttribute Moto moto,
-                             @RequestParam(value = "patio", required = false) Long patioId,
-                             Model model) {
+    @PostMapping("/{id}")
+    public String atualizarMoto(@PathVariable Long id,
+                                @Valid @ModelAttribute Moto moto,
+                                @RequestParam(required = false) Long patio,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
         moto.setId(id);
-        return saveOrUpdateMoto(moto, patioId, model, false);
+        return processarMoto(id, moto, patio, model, redirectAttributes);
     }
 
-    private String saveOrUpdateMoto(Moto moto, Long patioId, Model model, boolean isNew) {
+    private String processarMoto(Long id,
+                                 Moto moto,
+                                 Long patioId,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes) {
         try {
-            if (moto.getPlaca() == null || moto.getPlaca().isEmpty()) {
-                throw new IllegalArgumentException("O campo 'Placa' não pode ser vazio.");
-            }
-            if (moto.getModelo() == null) {
-                throw new IllegalArgumentException("O campo 'Modelo' não pode ser vazio.");
-            }
-            if (moto.getAno() == null) {
-                throw new IllegalArgumentException("O campo 'Ano' não pode ser vazio.");
-            }
-            if (moto.getQuilometragem() == null) {
-                throw new IllegalArgumentException("O campo 'Quilometragem' não pode ser vazio.");
-            }
             if (patioId == null) {
                 throw new IllegalArgumentException("Por favor, selecione um pátio.");
             }
 
-            Patio patio = patioService.findById(patioId)
+            Patio patio = patioRepository.findById(patioId)
                     .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
             moto.setPatio(patio);
-            motoService.save(moto);
+
+            if (moto.getStatus() == null) {
+                moto.setStatus(Status.DISPONIVEL);
+            }
+
+            motoRepository.save(moto);
+            redirectAttributes.addFlashAttribute("message",
+                    id == null ? "Moto cadastrada com sucesso!" : "Moto atualizada com sucesso!");
             return "redirect:/motos";
-        } catch (IllegalArgumentException | ResourceNotFoundException | BusinessException ex) {
+        } catch (Exception ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("moto", moto);
-            model.addAttribute("patios", patioService.findAll());
+            model.addAttribute("patios", patioRepository.findAll());
             return "motos/form";
         }
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteMoto(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/delete/{id}")
+    public String deletarMoto(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Moto moto = motoService.findById(id)
+            Moto moto = motoRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada."));
             if (moto.getStatus() != Status.DISPONIVEL) {
                 throw new BusinessException("Não é possível excluir uma moto que não está disponível.");
             }
-            motoService.deleteById(id);
+            motoRepository.deleteById(id);
             redirectAttributes.addFlashAttribute("message", "Moto excluída com sucesso!");
-        } catch (ResourceNotFoundException | BusinessException ex) {
+        } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
         }
         return "redirect:/motos";

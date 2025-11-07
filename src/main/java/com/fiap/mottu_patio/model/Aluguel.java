@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
+import com.fiap.mottu_patio.model.enums.Status;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -30,5 +32,6 @@ public class Aluguel {
     private LocalDateTime endDate;
 
     @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }

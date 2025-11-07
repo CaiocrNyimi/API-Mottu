@@ -7,7 +7,6 @@ com\fiap\mottu_patio\model\Vaga$VagaBuilder.class
 com\fiap\mottu_patio\controller\PatioRestController.class
 com\fiap\mottu_patio\config\CorsConfig.class
 com\fiap\mottu_patio\controller\RegisterController.class
-com\fiap\mottu_patio\controller\RegisterRestController.class
 com\fiap\mottu_patio\dto\LoginRequest.class
 com\fiap\mottu_patio\repository\AluguelRepository.class
 com\fiap\mottu_patio\repository\ManutencaoRepository.class
@@ -39,9 +38,11 @@ com\fiap\mottu_patio\service\AluguelService.class
 com\fiap\mottu_patio\model\Manutencao$ManutencaoBuilder.class
 com\fiap\mottu_patio\model\Patio$PatioBuilder.class
 com\fiap\mottu_patio\controller\AluguelController.class
+com\fiap\mottu_patio\service\AuthService.class
 com\fiap\mottu_patio\mapper\MotoMapperImpl.class
 com\fiap\mottu_patio\controller\ManutencaoController.class
 com\fiap\mottu_patio\dto\VagaResponse.class
+com\fiap\mottu_patio\exception\RestAuthenticationEntryPoint.class
 com\fiap\mottu_patio\controller\AluguelRestController.class
 com\fiap\mottu_patio\model\Moto.class
 com\fiap\mottu_patio\exception\GlobalExceptionHandler.class
@@ -62,6 +63,7 @@ com\fiap\mottu_patio\specification\PatioSpecification.class
 com\fiap\mottu_patio\auth\AuthController.class
 com\fiap\mottu_patio\controller\MotoController.class
 com\fiap\mottu_patio\controller\UserController.class
+com\fiap\mottu_patio\mapper\MotoMapper.class
 com\fiap\mottu_patio\dto\PatioResponse.class
 com\fiap\mottu_patio\controller\PatioController.class
 com\fiap\mottu_patio\model\enums\Status.class

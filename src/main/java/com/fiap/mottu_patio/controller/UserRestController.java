@@ -1,7 +1,6 @@
 package com.fiap.mottu_patio.controller;
 
-import com.fiap.mottu_patio.exception.BusinessException;
-import com.fiap.mottu_patio.exception.ResourceNotFoundException;
+import com.fiap.mottu_patio.dto.UserRequest;
 import com.fiap.mottu_patio.model.User;
 import com.fiap.mottu_patio.service.UserService;
 import jakarta.validation.Valid;
@@ -15,12 +14,8 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserRestController {
 
-    private final UserService userService;
-
     @Autowired
-    public UserRestController(UserService userService) {
-        this.userService = userService;
-    }
+    private UserService userService;
 
     @GetMapping
     public ResponseEntity<List<User>> listarTodos() {
@@ -31,26 +26,17 @@ public class UserRestController {
     public ResponseEntity<User> buscarPorId(@PathVariable Long id) {
         return userService.findById(id)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<?> criar(@Valid @RequestBody User user) {
-        try {
-            return ResponseEntity.ok(userService.save(user));
-        } catch (BusinessException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
+    public ResponseEntity<User> criar(@Valid @RequestBody UserRequest request) {
+        return ResponseEntity.ok(userService.criar(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @Valid @RequestBody User user) {
-        try {
-            user.setId(id);
-            return ResponseEntity.ok(userService.save(user));
-        } catch (BusinessException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
+    public ResponseEntity<User> atualizar(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
+        return ResponseEntity.ok(userService.atualizar(id, request));
     }
 
     @DeleteMapping("/{id}")

@@ -1,13 +1,12 @@
 package com.fiap.mottu_patio.controller;
 
-import com.fiap.mottu_patio.model.enums.Status;
-import com.fiap.mottu_patio.dto.AluguelResponse;
-import com.fiap.mottu_patio.exception.BusinessException;
-import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Aluguel;
-import com.fiap.mottu_patio.service.AluguelService;
-import com.fiap.mottu_patio.service.MotoService;
-import com.fiap.mottu_patio.service.UserService;
+import com.fiap.mottu_patio.model.Moto;
+import com.fiap.mottu_patio.model.User;
+import com.fiap.mottu_patio.model.enums.Status;
+import com.fiap.mottu_patio.repository.AluguelRepository;
+import com.fiap.mottu_patio.repository.MotoRepository;
+import com.fiap.mottu_patio.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,104 +15,128 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/alugueis")
 public class AluguelController {
 
-    private final AluguelService aluguelService;
-    private final MotoService motoService;
-    private final UserService userService;
+    @Autowired
+    private AluguelRepository aluguelRepository;
 
     @Autowired
-    public AluguelController(AluguelService aluguelService, MotoService motoService, UserService userService) {
-        this.aluguelService = aluguelService;
-        this.motoService = motoService;
-        this.userService = userService;
-    }
+    private MotoRepository motoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping
-    public String listAlugueis(Model model) {
-        List<AluguelResponse> alugueis = aluguelService.findAllResponses();
+    public String listarAlugueis(Model model) {
+        List<Aluguel> alugueis = aluguelRepository.findAll();
         model.addAttribute("alugueis", alugueis);
         return "alugueis/list";
     }
 
     @GetMapping("/new")
-    public String showNewForm(Model model) {
+    public String novoAluguelForm(Model model) {
         model.addAttribute("aluguel", new Aluguel());
-        model.addAttribute("motos", motoService.findByStatus(Status.DISPONIVEL));
-        model.addAttribute("users", userService.findAll());
+        model.addAttribute("motos", motoRepository.findByStatus(Status.DISPONIVEL));
+        model.addAttribute("users", userRepository.findAll());
         return "alugueis/form";
     }
 
     @GetMapping("/{id}")
-    public String showAluguelDetails(@PathVariable("id") Long id, Model model) {
-        Aluguel aluguel = aluguelService.findById(id).orElse(null);
-        if (aluguel != null) {
-            model.addAttribute("aluguel", aluguel);
+    public String detalhesAluguel(@PathVariable Long id, Model model) {
+        Optional<Aluguel> aluguel = aluguelRepository.findById(id);
+        if (aluguel.isPresent()) {
+            model.addAttribute("aluguel", aluguel.get());
             return "alugueis/details";
         }
         return "redirect:/alugueis";
     }
 
+    @GetMapping("/edit/{id}")
+    public String editarAluguelForm(@PathVariable Long id, Model model) {
+        Optional<Aluguel> aluguel = aluguelRepository.findById(id);
+        if (aluguel.isPresent()) {
+            model.addAttribute("aluguel", aluguel.get());
+            model.addAttribute("motos", motoRepository.findByStatus(Status.DISPONIVEL));
+            model.addAttribute("users", userRepository.findAll());
+            return "alugueis/form";
+        }
+        return "redirect:/alugueis";
+    }
+
     @PostMapping
-    public String createAluguel(@RequestParam("motoId") Long motoId,
-                                @RequestParam("userId") Long userId,
-                                @RequestParam("startDate") String startDateStr,
-                                @RequestParam("endDate") String endDateStr,
-                                Model model,
-                                RedirectAttributes redirectAttributes) {
-        return processAluguel(null, motoId, userId, startDateStr, endDateStr, model, redirectAttributes);
+    public String criarAluguel(@RequestParam Long motoId,
+                               @RequestParam Long userId,
+                               @RequestParam String startDate,
+                               @RequestParam String endDate,
+                               RedirectAttributes redirectAttributes,
+                               Model model) {
+        return processarAluguel(null, motoId, userId, startDate, endDate, redirectAttributes, model);
     }
 
-    @PutMapping("/{id}")
-    public String updateAluguel(@PathVariable("id") Long id,
-                                @RequestParam("motoId") Long motoId,
-                                @RequestParam("userId") Long userId,
-                                @RequestParam("startDate") String startDateStr,
-                                @RequestParam("endDate") String endDateStr,
-                                Model model,
-                                RedirectAttributes redirectAttributes) {
-        return processAluguel(id, motoId, userId, startDateStr, endDateStr, model, redirectAttributes);
+    @PostMapping("/{id}")
+    public String atualizarAluguel(@PathVariable Long id,
+                                   @RequestParam Long motoId,
+                                   @RequestParam Long userId,
+                                   @RequestParam String startDate,
+                                   @RequestParam String endDate,
+                                   RedirectAttributes redirectAttributes,
+                                   Model model) {
+        return processarAluguel(id, motoId, userId, startDate, endDate, redirectAttributes, model);
     }
 
-    private String processAluguel(Long id,
-                                  Long motoId,
-                                  Long userId,
-                                  String startDateStr,
-                                  String endDateStr,
-                                  Model model,
-                                  RedirectAttributes redirectAttributes) {
+    private String processarAluguel(Long id,
+                                    Long motoId,
+                                    Long userId,
+                                    String startDateStr,
+                                    String endDateStr,
+                                    RedirectAttributes redirectAttributes,
+                                    Model model) {
         try {
             LocalDateTime startDate = LocalDateTime.parse(startDateStr);
             LocalDateTime endDate = LocalDateTime.parse(endDateStr);
 
-            if (id == null) {
-                aluguelService.reserveBike(userId, motoId, startDate, endDate);
-                redirectAttributes.addFlashAttribute("message", "Aluguel criado com sucesso!");
-            } else {
-                aluguelService.updateAluguel(id, userId, motoId, startDate, endDate);
-                redirectAttributes.addFlashAttribute("message", "Aluguel atualizado com sucesso!");
-            }
+            Moto moto = motoRepository.findById(motoId)
+                    .orElseThrow(() -> new IllegalArgumentException("Moto não encontrada."));
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
 
+            Aluguel aluguel = (id == null) ? new Aluguel() : aluguelRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Aluguel não encontrado."));
+
+            aluguel.setMoto(moto);
+            aluguel.setUser(user);
+            aluguel.setStartDate(startDate);
+            aluguel.setEndDate(endDate);
+            aluguel.setStatus(Status.ALUGADA);
+
+            aluguelRepository.save(aluguel);
+
+            redirectAttributes.addFlashAttribute("message",
+                    id == null ? "Aluguel criado com sucesso!" : "Aluguel atualizado com sucesso!");
             return "redirect:/alugueis";
-        } catch (BusinessException | IllegalArgumentException | ResourceNotFoundException ex) {
+        } catch (Exception ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("aluguel", new Aluguel());
-            model.addAttribute("motos", motoService.findByStatus(Status.DISPONIVEL));
-            model.addAttribute("users", userService.findAll());
+            model.addAttribute("motos", motoRepository.findByStatus(Status.DISPONIVEL));
+            model.addAttribute("users", userRepository.findAll());
             return "alugueis/form";
         }
     }
 
     @PostMapping("/return/{id}")
-    public String returnAluguel(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            aluguelService.returnBike(id);
+    public String devolverAluguel(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Optional<Aluguel> aluguelOpt = aluguelRepository.findById(id);
+        if (aluguelOpt.isPresent()) {
+            Aluguel aluguel = aluguelOpt.get();
+            aluguel.setStatus(Status.DISPONIVEL);
+            aluguelRepository.save(aluguel);
             redirectAttributes.addFlashAttribute("message", "Aluguel devolvido com sucesso!");
-        } catch (ResourceNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Aluguel não encontrado.");
         }
         return "redirect:/alugueis";
     }

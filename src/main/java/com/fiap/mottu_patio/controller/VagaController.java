@@ -1,10 +1,9 @@
 package com.fiap.mottu_patio.controller;
 
-import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Patio;
 import com.fiap.mottu_patio.model.Vaga;
-import com.fiap.mottu_patio.service.PatioService;
-import com.fiap.mottu_patio.service.VagaService;
+import com.fiap.mottu_patio.repository.PatioRepository;
+import com.fiap.mottu_patio.repository.VagaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,31 +16,28 @@ import java.util.Optional;
 @RequestMapping("/vagas")
 public class VagaController {
 
-    private final VagaService vagaService;
-    private final PatioService patioService;
+    @Autowired
+    private VagaRepository vagaRepository;
 
     @Autowired
-    public VagaController(VagaService vagaService, PatioService patioService) {
-        this.vagaService = vagaService;
-        this.patioService = patioService;
-    }
+    private PatioRepository patioRepository;
 
     @GetMapping
     public String listVagas(Model model) {
-        model.addAttribute("vagas", vagaService.findAll());
+        model.addAttribute("vagas", vagaRepository.findAll());
         return "vagas/list";
     }
 
     @GetMapping("/new")
     public String showNewForm(Model model) {
         model.addAttribute("vaga", new Vaga());
-        model.addAttribute("patios", patioService.findAll());
+        model.addAttribute("patios", patioRepository.findAll());
         return "vagas/form";
     }
 
     @GetMapping("/{id}")
     public String showVagaDetails(@PathVariable("id") Long id, Model model) {
-        Optional<Vaga> vaga = vagaService.findById(id);
+        Optional<Vaga> vaga = vagaRepository.findById(id);
         if (vaga.isPresent()) {
             model.addAttribute("vaga", vaga.get());
             return "vagas/details";
@@ -51,10 +47,10 @@ public class VagaController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Optional<Vaga> vaga = vagaService.findById(id);
+        Optional<Vaga> vaga = vagaRepository.findById(id);
         if (vaga.isPresent()) {
             model.addAttribute("vaga", vaga.get());
-            model.addAttribute("patios", patioService.findAll());
+            model.addAttribute("patios", patioRepository.findAll());
             return "vagas/form";
         }
         return "redirect:/vagas";
@@ -63,20 +59,26 @@ public class VagaController {
     @PostMapping
     public String createVaga(@ModelAttribute Vaga vaga,
                              @RequestParam(value = "patio", required = false) Long patioId,
-                             Model model) {
-        return saveOrUpdateVaga(vaga, patioId, model, true);
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
+        return saveOrUpdateVaga(null, vaga, patioId, model, redirectAttributes);
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public String updateVaga(@PathVariable("id") Long id,
                              @ModelAttribute Vaga vaga,
                              @RequestParam(value = "patio", required = false) Long patioId,
-                             Model model) {
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
         vaga.setId(id);
-        return saveOrUpdateVaga(vaga, patioId, model, false);
+        return saveOrUpdateVaga(id, vaga, patioId, model, redirectAttributes);
     }
 
-    private String saveOrUpdateVaga(Vaga vaga, Long patioId, Model model, boolean isNew) {
+    private String saveOrUpdateVaga(Long id,
+                                    Vaga vaga,
+                                    Long patioId,
+                                    Model model,
+                                    RedirectAttributes redirectAttributes) {
         try {
             if (vaga.getIdentificador() == null || vaga.getIdentificador().isEmpty()) {
                 throw new IllegalArgumentException("O campo 'Identificador' não pode ser vazio.");
@@ -88,27 +90,29 @@ public class VagaController {
                 throw new IllegalArgumentException("Por favor, selecione um pátio.");
             }
 
-            Patio patio = patioService.findById(patioId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
+            Patio patio = patioRepository.findById(patioId)
+                    .orElseThrow(() -> new IllegalArgumentException("Pátio não encontrado."));
             vaga.setPatio(patio);
 
-            vagaService.save(vaga);
+            vagaRepository.save(vaga);
+            redirectAttributes.addFlashAttribute("message",
+                    id == null ? "Vaga criada com sucesso!" : "Vaga atualizada com sucesso!");
             return "redirect:/vagas";
-        } catch (IllegalArgumentException | IllegalStateException | ResourceNotFoundException ex) {
+        } catch (Exception ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("vaga", vaga);
-            model.addAttribute("patios", patioService.findAll());
+            model.addAttribute("patios", patioRepository.findAll());
             return "vagas/form";
         }
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteVaga(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
-            vagaService.deleteById(id);
+            vagaRepository.deleteById(id);
             redirectAttributes.addFlashAttribute("message", "Vaga excluída com sucesso!");
-        } catch (ResourceNotFoundException | IllegalStateException ex) {
-            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("error", "Erro ao excluir vaga: " + ex.getMessage());
         }
         return "redirect:/vagas";
     }

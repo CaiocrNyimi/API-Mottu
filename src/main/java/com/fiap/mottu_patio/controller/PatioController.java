@@ -1,8 +1,7 @@
 package com.fiap.mottu_patio.controller;
 
-import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.Patio;
-import com.fiap.mottu_patio.service.PatioService;
+import com.fiap.mottu_patio.repository.PatioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -16,28 +15,24 @@ import java.util.Optional;
 @RequestMapping("/patios")
 public class PatioController {
 
-    private final PatioService patioService;
-
     @Autowired
-    public PatioController(PatioService patioService) {
-        this.patioService = patioService;
-    }
+    private PatioRepository patioRepository;
 
     @GetMapping
-    public String listPatios(Model model) {
-        model.addAttribute("patios", patioService.findAll());
+    public String listarPatios(Model model) {
+        model.addAttribute("patios", patioRepository.findAll());
         return "patios/list";
     }
 
     @GetMapping("/new")
-    public String showNewForm(Model model) {
+    public String novoPatioForm(Model model) {
         model.addAttribute("patio", new Patio());
         return "patios/form";
     }
 
     @GetMapping("/{id}")
-    public String showPatioDetails(@PathVariable Long id, Model model) {
-        Optional<Patio> patio = patioService.findById(id);
+    public String detalhesPatio(@PathVariable Long id, Model model) {
+        Optional<Patio> patio = patioRepository.findById(id);
         if (patio.isPresent()) {
             model.addAttribute("patio", patio.get());
             return "patios/details";
@@ -46,8 +41,8 @@ public class PatioController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        Optional<Patio> patio = patioService.findById(id);
+    public String editarPatioForm(@PathVariable Long id, Model model) {
+        Optional<Patio> patio = patioRepository.findById(id);
         if (patio.isPresent()) {
             model.addAttribute("patio", patio.get());
             return "patios/form";
@@ -56,17 +51,25 @@ public class PatioController {
     }
 
     @PostMapping
-    public String createPatio(@ModelAttribute Patio patio, Model model, RedirectAttributes redirectAttributes) {
-        return saveOrUpdatePatio(patio, model, redirectAttributes, true);
+    public String criarPatio(@ModelAttribute Patio patio,
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
+        return processarPatio(null, patio, model, redirectAttributes);
     }
 
-    @PutMapping("/{id}")
-    public String updatePatio(@PathVariable Long id, @ModelAttribute Patio patio, Model model, RedirectAttributes redirectAttributes) {
+    @PostMapping("/{id}")
+    public String atualizarPatio(@PathVariable Long id,
+                                 @ModelAttribute Patio patio,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes) {
         patio.setId(id);
-        return saveOrUpdatePatio(patio, model, redirectAttributes, false);
+        return processarPatio(id, patio, model, redirectAttributes);
     }
 
-    private String saveOrUpdatePatio(Patio patio, Model model, RedirectAttributes redirectAttributes, boolean isNew) {
+    private String processarPatio(Long id,
+                                  Patio patio,
+                                  Model model,
+                                  RedirectAttributes redirectAttributes) {
         try {
             if (patio.getNome() == null || patio.getNome().isEmpty()) {
                 throw new IllegalArgumentException("O campo 'Nome' não pode ser vazio.");
@@ -74,33 +77,29 @@ public class PatioController {
             if (patio.getEndereco() == null || patio.getEndereco().isEmpty()) {
                 throw new IllegalArgumentException("O campo 'Endereço' não pode ser vazio.");
             }
-            if (patio.getCapacidade() <= 0) {
+            if (patio.getCapacidade() == null || patio.getCapacidade() <= 0) {
                 throw new IllegalArgumentException("A capacidade do pátio deve ser um número positivo.");
             }
 
-            if (isNew) {
-                patioService.save(patio);
-                redirectAttributes.addFlashAttribute("message", "Pátio criado com sucesso!");
-            } else {
-                patioService.update(patio.getId(), patio);
-                redirectAttributes.addFlashAttribute("message", "Pátio atualizado com sucesso!");
-            }
+            patioRepository.save(patio);
+            redirectAttributes.addFlashAttribute("message",
+                    id == null ? "Pátio criado com sucesso!" : "Pátio atualizado com sucesso!");
             return "redirect:/patios";
-        } catch (IllegalArgumentException | IllegalStateException | ResourceNotFoundException ex) {
+        } catch (Exception ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("patio", patio);
             return "patios/form";
         }
     }
 
-    @DeleteMapping("/{id}")
-    public String deletePatio(@PathVariable("id") Long id, RedirectAttributes attributes) {
+    @PostMapping("/delete/{id}")
+    public String deletarPatio(@PathVariable Long id, RedirectAttributes attributes) {
         try {
-            patioService.deleteById(id);
+            patioRepository.deleteById(id);
             attributes.addFlashAttribute("message", "Pátio excluído com sucesso!");
         } catch (DataIntegrityViolationException ex) {
             attributes.addFlashAttribute("error", "Não é possível excluir este pátio porque ele ainda contém motos.");
-        } catch (ResourceNotFoundException | IllegalStateException ex) {
+        } catch (Exception ex) {
             attributes.addFlashAttribute("error", ex.getMessage());
         }
         return "redirect:/patios";

@@ -2,7 +2,8 @@ package com.fiap.mottu_patio.mapper;
 
 import com.fiap.mottu_patio.dto.MotoResponse;
 import com.fiap.mottu_patio.model.Moto;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 

@@ -1,9 +1,7 @@
 package com.fiap.mottu_patio.controller;
 
-import com.fiap.mottu_patio.exception.BusinessException;
-import com.fiap.mottu_patio.exception.ResourceNotFoundException;
 import com.fiap.mottu_patio.model.User;
-import com.fiap.mottu_patio.service.UserService;
+import com.fiap.mottu_patio.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,16 +16,12 @@ import java.util.Optional;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
-
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private UserRepository userRepository;
 
     @GetMapping
     public String listUsers(Model model) {
-        model.addAttribute("users", userService.findAll());
+        model.addAttribute("users", userRepository.findAll());
         return "users/list";
     }
 
@@ -39,7 +33,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String showUserDetails(@PathVariable("id") Long id, Model model) {
-        Optional<User> user = userService.findById(id);
+        Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
             return "users/details";
@@ -49,7 +43,7 @@ public class UserController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Optional<User> user = userService.findById(id);
+        Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
             return "users/form";
@@ -65,7 +59,7 @@ public class UserController {
         return saveOrUpdateUser(user, bindingResult, model, redirectAttributes, true);
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public String updateUser(@PathVariable("id") Long id,
                              @Valid @ModelAttribute("user") User user,
                              BindingResult bindingResult,
@@ -85,24 +79,24 @@ public class UserController {
             return "users/form";
         }
         try {
-            userService.save(user);
+            userRepository.save(user);
             redirectAttributes.addFlashAttribute("message",
                     isNew ? "Usuário criado com sucesso!" : "Usuário atualizado com sucesso!");
             return "redirect:/users";
-        } catch (BusinessException ex) {
+        } catch (Exception ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("user", user);
             return "users/form";
         }
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
-            userService.deleteById(id);
+            userRepository.deleteById(id);
             redirectAttributes.addFlashAttribute("message", "Usuário excluído com sucesso!");
-        } catch (ResourceNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("error", "Erro ao excluir usuário: " + ex.getMessage());
         }
         return "redirect:/users";
     }

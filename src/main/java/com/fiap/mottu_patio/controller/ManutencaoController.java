@@ -1,10 +1,9 @@
 package com.fiap.mottu_patio.controller;
 
-import com.fiap.mottu_patio.exception.BusinessException;
 import com.fiap.mottu_patio.model.Manutencao;
 import com.fiap.mottu_patio.model.Moto;
-import com.fiap.mottu_patio.service.ManutencaoService;
-import com.fiap.mottu_patio.service.MotoService;
+import com.fiap.mottu_patio.repository.ManutencaoRepository;
+import com.fiap.mottu_patio.repository.MotoRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,31 +18,28 @@ import java.util.Optional;
 @RequestMapping("/manutencoes")
 public class ManutencaoController {
 
-    private final ManutencaoService manutencaoService;
-    private final MotoService motoService;
+    @Autowired
+    private ManutencaoRepository manutencaoRepository;
 
     @Autowired
-    public ManutencaoController(ManutencaoService manutencaoService, MotoService motoService) {
-        this.manutencaoService = manutencaoService;
-        this.motoService = motoService;
-    }
+    private MotoRepository motoRepository;
 
     @GetMapping
-    public String listManutencoes(Model model) {
-        model.addAttribute("manutencoes", manutencaoService.findAll());
+    public String listarManutencoes(Model model) {
+        model.addAttribute("manutencoes", manutencaoRepository.findAll());
         return "manutencoes/list";
     }
 
     @GetMapping("/new")
-    public String showNewForm(Model model) {
+    public String novaManutencaoForm(Model model) {
         model.addAttribute("manutencao", new Manutencao());
-        model.addAttribute("motos", motoService.findAll());
+        model.addAttribute("motos", motoRepository.findAll());
         return "manutencoes/form";
     }
 
     @GetMapping("/{id}")
-    public String showManutencaoDetails(@PathVariable("id") Long id, Model model) {
-        Optional<Manutencao> manutencao = manutencaoService.findById(id);
+    public String detalhesManutencao(@PathVariable Long id, Model model) {
+        Optional<Manutencao> manutencao = manutencaoRepository.findById(id);
         if (manutencao.isPresent()) {
             model.addAttribute("manutencao", manutencao.get());
             return "manutencoes/details";
@@ -52,67 +48,68 @@ public class ManutencaoController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Optional<Manutencao> manutencao = manutencaoService.findById(id);
+    public String editarManutencaoForm(@PathVariable Long id, Model model) {
+        Optional<Manutencao> manutencao = manutencaoRepository.findById(id);
         if (manutencao.isPresent()) {
             model.addAttribute("manutencao", manutencao.get());
-            model.addAttribute("motos", motoService.findAll());
+            model.addAttribute("motos", motoRepository.findAll());
             return "manutencoes/form";
         }
         return "redirect:/manutencoes";
     }
 
     @PostMapping
-    public String createManutencao(@Valid @ModelAttribute("manutencao") Manutencao manutencao,
-                                   BindingResult bindingResult,
-                                   @RequestParam("motoId") Long motoId,
-                                   RedirectAttributes redirectAttributes,
-                                   Model model) {
-        return saveOrUpdateManutencao(null, manutencao, bindingResult, motoId, redirectAttributes, model);
+    public String criarManutencao(@Valid @ModelAttribute("manutencao") Manutencao manutencao,
+                                  BindingResult bindingResult,
+                                  @RequestParam Long motoId,
+                                  RedirectAttributes redirectAttributes,
+                                  Model model) {
+        return processarManutencao(null, manutencao, bindingResult, motoId, redirectAttributes, model);
     }
 
-    @PutMapping("/{id}")
-    public String updateManutencao(@PathVariable("id") Long id,
-                                   @Valid @ModelAttribute("manutencao") Manutencao manutencao,
-                                   BindingResult bindingResult,
-                                   @RequestParam("motoId") Long motoId,
-                                   RedirectAttributes redirectAttributes,
-                                   Model model) {
+    @PostMapping("/{id}")
+    public String atualizarManutencao(@PathVariable Long id,
+                                      @Valid @ModelAttribute("manutencao") Manutencao manutencao,
+                                      BindingResult bindingResult,
+                                      @RequestParam Long motoId,
+                                      RedirectAttributes redirectAttributes,
+                                      Model model) {
         manutencao.setId(id);
-        return saveOrUpdateManutencao(id, manutencao, bindingResult, motoId, redirectAttributes, model);
+        return processarManutencao(id, manutencao, bindingResult, motoId, redirectAttributes, model);
     }
 
-    private String saveOrUpdateManutencao(Long id,
-                                          Manutencao manutencao,
-                                          BindingResult bindingResult,
-                                          Long motoId,
-                                          RedirectAttributes redirectAttributes,
-                                          Model model) {
+    private String processarManutencao(Long id,
+                                       Manutencao manutencao,
+                                       BindingResult bindingResult,
+                                       Long motoId,
+                                       RedirectAttributes redirectAttributes,
+                                       Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("manutencao", manutencao);
-            model.addAttribute("motos", motoService.findAll());
+            model.addAttribute("motos", motoRepository.findAll());
             return "manutencoes/form";
         }
+
         try {
-            Moto moto = motoService.findById(motoId)
+            Moto moto = motoRepository.findById(motoId)
                     .orElseThrow(() -> new IllegalArgumentException("Moto não encontrada."));
             manutencao.setMoto(moto);
-            manutencaoService.save(manutencao);
+            manutencaoRepository.save(manutencao);
             redirectAttributes.addFlashAttribute("message",
                     id == null ? "Manutenção registrada com sucesso!" : "Manutenção atualizada com sucesso!");
             return "redirect:/manutencoes";
-        } catch (IllegalArgumentException | BusinessException ex) {
+        } catch (Exception ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("manutencao", manutencao);
-            model.addAttribute("motos", motoService.findAll());
+            model.addAttribute("motos", motoRepository.findAll());
             return "manutencoes/form";
         }
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteManutencao(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/delete/{id}")
+    public String deletarManutencao(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            manutencaoService.deleteById(id);
+            manutencaoRepository.deleteById(id);
             redirectAttributes.addFlashAttribute("message", "Manutenção excluída com sucesso!");
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("error", "Erro ao excluir manutenção: " + ex.getMessage());

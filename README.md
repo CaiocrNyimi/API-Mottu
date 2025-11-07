@@ -209,7 +209,7 @@ http://localhost:8080/api/vagas/1
 
 ### 📦 Aluguel
 
-#### POST `/api/aluguel`
+#### POST `/api/alugueis`
 ```json
 {
   "motoId": 1,
@@ -219,29 +219,29 @@ http://localhost:8080/api/vagas/1
 }
 ```
 
-#### GET `/api/aluguel`
+#### GET `/api/alugueis`
 ```http
-http://localhost:8080/api/aluguel
+http://localhost:8080/api/alugueis
 ```
 
-#### GET `/api/aluguel/{id}`
+#### GET `/api/alugueis/{id}`
 ```http
-http://localhost:8080/api/aluguel/1
+http://localhost:8080/api/alugueis/1
 ```
 
-#### PUT `/api/aluguel/{id}`
+#### PUT `/api/alugueis/{id}`
 {
   "dataFim": "2025-10-05"
 }
 
-#### DELETE `/api/aluguel/{id}`
+#### DELETE `/api/alugueis/{id}`
 ```http
-http://localhost:8080/api/aluguel/1
+http://localhost:8080/api/alugueis/1
 ```
 
 ### 🛠️ Manutenção
 
-#### POST `/api/manutencao`
+#### POST `/api/manutencoes`
 ```json
 {
   "motoId": 1,
@@ -250,17 +250,17 @@ http://localhost:8080/api/aluguel/1
 }
 ```
 
-#### GET `/api/manutencao`
+#### GET `/api/manutencoes`
 ```http
-http://localhost:8080/api/manutencao
+http://localhost:8080/api/manutencoes
 ```
 
-#### GET `/api/manutencao/{id}`
+#### GET `/api/manutencoes/{id}`
 ```http
-http://localhost:8080/api/manutencao/1
+http://localhost:8080/api/manutencoes/1
 ```
 
-#### PUT `/api/manutencao/{id}`
+#### PUT `/api/manutencoes/{id}`
 ```json
 {
   "descricao": "Revisão geral",
@@ -268,9 +268,9 @@ http://localhost:8080/api/manutencao/1
 }
 ```
 
-#### DELETE `/api/manutencao/{id}`
+#### DELETE `/api/manutencoes/{id}`
 ```http
-http://localhost:8080/api/manutencao/1
+http://localhost:8080/api/manutencoes/1
 ```
 
 ### 👤 Usuários

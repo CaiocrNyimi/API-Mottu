@@ -1,85 +1,46 @@
 package com.fiap.mottu_patio.controller;
 
+import com.fiap.mottu_patio.dto.PatioRequest;
 import com.fiap.mottu_patio.dto.PatioResponse;
-import com.fiap.mottu_patio.exception.ResourceNotFoundException;
-import com.fiap.mottu_patio.model.Patio;
 import com.fiap.mottu_patio.service.PatioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/patios")
 public class PatioRestController {
 
-    private final PatioService patioService;
-
     @Autowired
-    public PatioRestController(PatioService patioService) {
-        this.patioService = patioService;
-    }
+    private PatioService patioService;
 
     @GetMapping
     public ResponseEntity<List<PatioResponse>> listarTodos() {
-        List<Patio> patios = patioService.findAll();
-        List<PatioResponse> response = patios.stream()
-                .map(PatioResponse::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(patioService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PatioResponse> buscarPorId(@PathVariable Long id) {
         return patioService.findById(id)
-                .map(patio -> ResponseEntity.ok(new PatioResponse(patio)))
-                .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Patio> criar(@RequestBody Patio patio) {
-        try {
-            validar(patio);
-            return ResponseEntity.ok(patioService.save(patio));
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(null);
-        }
+    public ResponseEntity<PatioResponse> criar(@RequestBody PatioRequest request) {
+        return ResponseEntity.ok(patioService.criar(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Patio> atualizar(@PathVariable Long id, @RequestBody Patio patio) {
-        try {
-            validar(patio);
-            patio.setId(id);
-            return ResponseEntity.ok(patioService.update(id, patio));
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(null);
-        }
+    public ResponseEntity<PatioResponse> atualizar(@PathVariable Long id, @RequestBody PatioRequest request) {
+        return ResponseEntity.ok(patioService.atualizar(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletar(@PathVariable Long id) {
-        try {
-            patioService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } catch (DataIntegrityViolationException ex) {
-            return ResponseEntity.badRequest().body("Não é possível excluir este pátio porque ele ainda contém motos.");
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
-    }
-
-    private void validar(Patio patio) {
-        if (patio.getNome() == null || patio.getNome().isEmpty()) {
-            throw new IllegalArgumentException("O campo 'Nome' não pode ser vazio.");
-        }
-        if (patio.getEndereco() == null || patio.getEndereco().isEmpty()) {
-            throw new IllegalArgumentException("O campo 'Endereço' não pode ser vazio.");
-        }
-        if (patio.getCapacidade() == null || patio.getCapacidade() <= 0) {
-            throw new IllegalArgumentException("A capacidade do pátio deve ser um número positivo.");
-        }
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        patioService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
