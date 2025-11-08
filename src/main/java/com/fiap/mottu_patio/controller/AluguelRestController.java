@@ -1,7 +1,8 @@
 package com.fiap.mottu_patio.controller;
 
-import com.fiap.mottu_patio.model.Aluguel;
 import com.fiap.mottu_patio.service.AluguelService;
+import com.fiap.mottu_patio.dto.AluguelRequest;
+import com.fiap.mottu_patio.dto.AluguelResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,25 +17,25 @@ public class AluguelRestController {
     private AluguelService aluguelService;
 
     @GetMapping
-    public ResponseEntity<List<Aluguel>> listarTodos() {
+    public ResponseEntity<List<AluguelResponse>> listarTodos() {
         return ResponseEntity.ok(aluguelService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Aluguel> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<AluguelResponse> buscarPorId(@PathVariable Long id) {
         return aluguelService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Aluguel> criar(@RequestBody Aluguel aluguel) {
-        return ResponseEntity.ok(aluguelService.criar(aluguel));
+    public ResponseEntity<AluguelResponse> criar(@RequestBody AluguelRequest request) {
+        return ResponseEntity.ok(aluguelService.criar(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Aluguel> atualizar(@PathVariable Long id, @RequestBody Aluguel aluguel) {
-        return ResponseEntity.ok(aluguelService.atualizar(id, aluguel));
+    public ResponseEntity<AluguelResponse> atualizar(@PathVariable Long id, @RequestBody AluguelRequest request) {
+        return ResponseEntity.ok(aluguelService.atualizar(id, request));
     }
 
     @DeleteMapping("/{id}")

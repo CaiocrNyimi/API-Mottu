@@ -177,8 +177,8 @@ http://localhost:8080/api/patios/1
 #### POST /api/vagas`
 ```json
 {
-  "identificador": "VAGA-A01",
-  "codigo": "A123",
+  "identificador": "VAGA-TESTE",
+  "codigo": "TESTE",
   "patioId": 1
 }
 ```
@@ -196,8 +196,8 @@ http://localhost:8080/api/vagas/1
 #### PUT /api/vagas/{id}`
 ```json
 {
-  "identificador": "VAGA-A01",
-  "codigo": "A01",
+  "identificador": "VAGA-TESTEATUALIZADO",
+  "codigo": "TESTE",
   "patioId": 1
 }
 ```
@@ -212,10 +212,11 @@ http://localhost:8080/api/vagas/1
 #### POST `/api/alugueis`
 ```json
 {
+  "userId": 1,
   "motoId": 1,
-  "clienteId": 2,
-  "dataInicio": "2025-09-23",
-  "dataFim": "2025-09-30"
+  "startDate": "2025-09-23T00:00:00",
+  "endDate": "2025-09-30T00:00:00",
+  "status": "ALUGADA"
 }
 ```
 
@@ -229,11 +230,6 @@ http://localhost:8080/api/alugueis
 http://localhost:8080/api/alugueis/1
 ```
 
-#### PUT `/api/alugueis/{id}`
-{
-  "dataFim": "2025-10-05"
-}
-
 #### DELETE `/api/alugueis/{id}`
 ```http
 http://localhost:8080/api/alugueis/1
@@ -246,7 +242,7 @@ http://localhost:8080/api/alugueis/1
 {
   "motoId": 1,
   "descricao": "Troca de óleo",
-  "data": "2025-09-20"
+  "data": "2025-09-20T00:00:00"
 }
 ```
 
@@ -258,14 +254,6 @@ http://localhost:8080/api/manutencoes
 #### GET `/api/manutencoes/{id}`
 ```http
 http://localhost:8080/api/manutencoes/1
-```
-
-#### PUT `/api/manutencoes/{id}`
-```json
-{
-  "descricao": "Revisão geral",
-  "data": "2025-09-25"
-}
 ```
 
 #### DELETE `/api/manutencoes/{id}`
@@ -338,14 +326,12 @@ http://localhost:8080/api/users/1
 - `POST` - Criar aluguel
 - `GET` - Listar todos
 - `GET /{id}` - Buscar por ID
-- `PUT /{id}` - Atualizar
 - `DELETE /{id}` - Cancelar aluguel
 
 ### 🛠️ Manutenção (`/api/manutencoes`)
 - `POST` - Registrar manutenção
 - `GET` - Listar todas
 - `GET /{id}` - Buscar por ID
-- `PUT /{id}` - Atualizar
 - `DELETE /{id}` - Remover manutenção
 
 ### 👤 Usuários (`/api/users`)
@@ -357,7 +343,7 @@ http://localhost:8080/api/users/1
 
 ### 🔐 Autenticação
 - `POST /api/auth/register` - Registrar novo usuário
-- `POST /api/auth/login` - Autenticar e obter token JWT
+- `POST /api/auth/login` - Autenticar e obter acesso aos CRUDS
 - 
 ---
 
@@ -384,8 +370,8 @@ mvn spring-boot:run
 A API estará disponível em:  
 📍 `http://localhost:8080`
 
-## 🧠 Futuras Melhorias
 
-- ✅ **Criar dashboard visual** com Spring + React para supervisão dos pátios em tempo real;
-- ✅ **Integrar com API externa de leitura de motos** (fornecida pela Mottu ou terceiros) para automatizar o processo de entrada e saída, substituindo o envio manual da placa via request.
-- ✅ **Deixar todos os campos em ingles**
+Ou...
+
+Acesse direto na nuvem em:
+📍 `https://api-mottu-bhcx.onrender.com`

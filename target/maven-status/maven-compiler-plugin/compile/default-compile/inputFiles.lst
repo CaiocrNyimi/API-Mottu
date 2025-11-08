@@ -22,6 +22,7 @@ C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\ErrorRes
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\LoginRequest.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\LoginResponse.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\ManutencaoRequest.java
+C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\ManutencaoResponse.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\MotoRequest.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\MotoResponse.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\PatioRequest.java
@@ -36,6 +37,7 @@ C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\exception\Re
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\exception\RestAuthenticationEntryPoint.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\exception\RestExceptionHandler.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\mapper\AluguelMapper.java
+C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\mapper\ManutencaoMapper.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\mapper\MotoMapper.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\mapper\PatioMapper.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\model\Aluguel.java

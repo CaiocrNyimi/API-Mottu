@@ -2,15 +2,19 @@ com\fiap\mottu_patio\MottuPatioApplication.class
 com\fiap\mottu_patio\mapper\PatioMapperImpl.class
 com\fiap\mottu_patio\model\Vaga$VagaBuilder.class
 com\fiap\mottu_patio\controller\PatioRestController.class
+com\fiap\mottu_patio\service\VideoDetectionService$1.class
 com\fiap\mottu_patio\repository\ManutencaoRepository.class
 com\fiap\mottu_patio\dto\AluguelResponse.class
 com\fiap\mottu_patio\dto\AluguelResponse$AluguelResponseBuilder.class
 com\fiap\mottu_patio\exception\BusinessException.class
+com\fiap\mottu_patio\service\VideoDetectionService.class
+com\fiap\mottu_patio\dto\VideoDetectionResponse.class
 com\fiap\mottu_patio\dto\MotoResponse.class
 com\fiap\mottu_patio\model\User.class
 com\fiap\mottu_patio\service\PatioService.class
 com\fiap\mottu_patio\controller\AuthRestController.class
 com\fiap\mottu_patio\repository\VagaRepository.class
+com\fiap\mottu_patio\controller\VideoDetectionController.class
 com\fiap\mottu_patio\dto\MotoRequest.class
 com\fiap\mottu_patio\controller\AluguelController.class
 com\fiap\mottu_patio\service\AuthService.class
@@ -35,6 +39,7 @@ com\fiap\mottu_patio\config\CorsConfig.class
 com\fiap\mottu_patio\controller\RegisterController.class
 com\fiap\mottu_patio\dto\LoginRequest.class
 com\fiap\mottu_patio\repository\AluguelRepository.class
+com\fiap\mottu_patio\mapper\ManutencaoMapper.class
 com\fiap\mottu_patio\repository\PatioRepository.class
 com\fiap\mottu_patio\dto\LoginResponse.class
 com\fiap\mottu_patio\service\UserService.class
@@ -43,6 +48,8 @@ com\fiap\mottu_patio\service\VagaService.class
 com\fiap\mottu_patio\controller\VagaController.class
 com\fiap\mottu_patio\specification\MotoSpecification.class
 com\fiap\mottu_patio\controller\UserRestController.class
+com\fiap\mottu_patio\dto\ManutencaoResponse.class
+com\fiap\mottu_patio\dto\ManutencaoResponse$ManutencaoResponseBuilder.class
 com\fiap\mottu_patio\dto\ErrorResponse.class
 com\fiap\mottu_patio\dto\PatioRequest.class
 com\fiap\mottu_patio\model\User$UserBuilder.class
