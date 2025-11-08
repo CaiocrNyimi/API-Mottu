@@ -15,6 +15,7 @@ C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\controller\U
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\controller\UserRestController.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\controller\VagaController.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\controller\VagaRestController.java
+C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\controller\VideoDetectionController.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\AluguelRequest.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\AluguelResponse.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\ErrorResponse.java
@@ -28,6 +29,7 @@ C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\PatioRes
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\UserRequest.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\VagaRequest.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\VagaResponse.java
+C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\dto\VideoDetectionResponse.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\exception\BusinessException.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\exception\GlobalExceptionHandler.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\exception\ResourceNotFoundException.java
@@ -60,5 +62,6 @@ C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\service\Moto
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\service\PatioService.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\service\UserService.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\service\VagaService.java
+C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\service\VideoDetectionService.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\specification\MotoSpecification.java
 C:\Users\caioc\Desktop\API-Mottu\src\main\java\com\fiap\mottu_patio\specification\PatioSpecification.java
