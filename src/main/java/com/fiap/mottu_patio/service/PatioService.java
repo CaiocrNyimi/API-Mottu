@@ -8,6 +8,9 @@ import com.fiap.mottu_patio.model.Patio;
 import com.fiap.mottu_patio.model.Vaga;
 import com.fiap.mottu_patio.repository.PatioRepository;
 import com.fiap.mottu_patio.repository.VagaRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +72,7 @@ public class PatioService {
         return patioMapper.toResponse(atualizado);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         Patio patio = patioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pátio não encontrado."));

@@ -266,10 +266,10 @@ http://localhost:8080/api/manutencoes/1
 #### POST `/api/users`
 ```json
 {
-  "username": "Admin da Silva",
-  "email": "adminsilva@email.com",
+  "username": "Usuario Comum",
+  "email": "comumuser@email.com",
   "password": "SenhaSegura",
-  "role": "ADMIN"
+  "role": "CLIENTE"
 }
 ```
 
@@ -286,10 +286,10 @@ http://localhost:8080/api/users/1
 #### PUT `/api/users/{id}`
 ```json
 {
-  "username": "Admin 2",
-  "email": "adminsilva@email.com",
+  "username": "Usuario Comum e Atualizado",
+  "email": "comumuser@email.com",
   "password": "SenhaSegura",
-  "role": "ADMIN"
+  "role": "CLIENTE"
 }
 ```
 
